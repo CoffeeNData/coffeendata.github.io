@@ -1,0 +1,14 @@
+/*
+This is the custom styling for the site. Anychanges made
+here should override the main styling of the Jekyll theme
+*/
+
+/* Add round corners */
+img {
+    border-radius: 10px;
+}
+
+/* Justify all the text */
+p {
+    text-align: justify;
+}
