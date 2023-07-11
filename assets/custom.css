@@ -6,7 +6,7 @@ here should override the main styling of the Jekyll theme
 /* Add round corners */
 img {
     border-radius: 10px;
-    box-shadow: 10px 10px 5px lightgrey;
+    box-shadow: 5px 5px 5px lightgrey;
 }
 
 /* Justify all the text */
