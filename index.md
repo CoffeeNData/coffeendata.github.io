@@ -8,6 +8,8 @@ permalink: /index
 
 Hello there! Im **Coffee** and this is my personal blog and portfolio. Here you can find pieces of my research and work. Dont hesitate to provide feedback under the [GitHub repo](https://github.com/CoffeeNData/coffeendata.github.io).
 
+![](assets/coffee-banner-unpslash.jpg)
+
 ## Technical specifications
 
 Im quite polivalent. I do web pentesting, infrastructure pentesting, OSINT, development and reverse engineering for fun and profit! Im always open to finding and _hacking_ through new tech.
