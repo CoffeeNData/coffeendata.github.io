@@ -8,7 +8,7 @@ permalink: /index
 
 Hello there! Im **Coffee** and this is my personal blog and portfolio. Here you can find pieces of my research and work. Dont hesitate to provide feedback under the [GitHub repo](https://github.com/CoffeeNData/coffeendata.github.io).
 
-![](/assets/images/coffee-banner-unpslash.jpg)
+![](/assets/images/banner-unsplash.jpg)
 
 ## Technical specifications
 
