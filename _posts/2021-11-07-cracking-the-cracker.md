@@ -2,7 +2,6 @@
 layout: post
 title: "Cracking the Cracker: Ripping appart a blackhat tool"
 date: 2021-11-7
-categories: reversing windows code-analysis
 ---
 
 Much of offensive security students and practitioners overlook the world that lies just below the scripts and the dreaded misconfigured permissions. You're probably already familiar with the famous Buffer Overflows - and overflows in general - and tired of frustratedly staring at the size of a buffer in GDB. Still, in the real world, not all exploitation consists of doing BoFs on a prepped Ubuntu, especially when the majority of the operating system market is governed by Microsoft.
