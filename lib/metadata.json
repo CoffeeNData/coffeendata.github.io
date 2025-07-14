@@ -1,6 +1,6 @@
 {
   "vaultName": "coffeendata.github.io",
-  "lastExport": 1752501949188,
+  "lastExport": 1752502218364,
   "pluginVersion": "1.8.01",
   "validBodyClasses": "publish css-settings-manager theme-dark show-inline-title show-ribbon",
   "useCustomHeadContent": false,
@@ -86,7 +86,7 @@
   ],
   "fileInfo": {
     "content/2021-11-07-cracking-the-cracker.md": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 19948,
       "exportedPath": "content/2021-11-07-cracking-the-cracker.html",
       "dependencies": [
@@ -114,7 +114,7 @@
       ]
     },
     "content/2025-05-25-patching-net-applications-101.md": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 8493,
       "exportedPath": "content/2025-05-25-patching-net-applications-101.html",
       "dependencies": [
@@ -131,321 +131,321 @@
       ]
     },
     "index.md": {
-      "modifiedTime": 1752501949188,
-      "sourceSize": 1838,
+      "modifiedTime": 1752502218364,
+      "sourceSize": 1740,
       "exportedPath": "index.html",
       "dependencies": [
         "assets/images/banner-unsplash.jpg"
       ]
     },
     "lib/media/(1).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 64792,
       "exportedPath": "lib/media/(1).png",
       "dependencies": []
     },
     "lib/media/(2).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 66248,
       "exportedPath": "lib/media/(2).png",
       "dependencies": []
     },
     "lib/media/(3).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 18557,
       "exportedPath": "lib/media/(3).png",
       "dependencies": []
     },
     "lib/media/(4).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 6423,
       "exportedPath": "lib/media/(4).png",
       "dependencies": []
     },
     "lib/media/(5).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 11900,
       "exportedPath": "lib/media/(5).png",
       "dependencies": []
     },
     "lib/media/(6).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 56209,
       "exportedPath": "lib/media/(6).png",
       "dependencies": []
     },
     "lib/media/(7).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 73224,
       "exportedPath": "lib/media/(7).png",
       "dependencies": []
     },
     "lib/media/(8).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 59382,
       "exportedPath": "lib/media/(8).png",
       "dependencies": []
     },
     "lib/media/(9).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 98002,
       "exportedPath": "lib/media/(9).png",
       "dependencies": []
     },
     "lib/media/(10).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 78375,
       "exportedPath": "lib/media/(10).png",
       "dependencies": []
     },
     "lib/media/(11).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 40730,
       "exportedPath": "lib/media/(11).png",
       "dependencies": []
     },
     "lib/media/(12).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 47250,
       "exportedPath": "lib/media/(12).png",
       "dependencies": []
     },
     "lib/media/(13).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 52463,
       "exportedPath": "lib/media/(13).png",
       "dependencies": []
     },
     "lib/media/(14).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 60700,
       "exportedPath": "lib/media/(14).png",
       "dependencies": []
     },
     "lib/media/(15).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 75647,
       "exportedPath": "lib/media/(15).png",
       "dependencies": []
     },
     "lib/media/(16).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 34632,
       "exportedPath": "lib/media/(16).png",
       "dependencies": []
     },
     "lib/media/(17).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 57168,
       "exportedPath": "lib/media/(17).png",
       "dependencies": []
     },
     "lib/media/(18).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 44295,
       "exportedPath": "lib/media/(18).png",
       "dependencies": []
     },
     "lib/media/(19).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 66279,
       "exportedPath": "lib/media/(19).png",
       "dependencies": []
     },
     "lib/media/(20).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 39960,
       "exportedPath": "lib/media/(20).png",
       "dependencies": []
     },
     "lib/media/(21).png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 107182,
       "exportedPath": "lib/media/(21).png",
       "dependencies": []
     },
     "lib/media/pasted-image-20250525230613.png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 41199,
       "exportedPath": "lib/media/pasted-image-20250525230613.png",
       "dependencies": []
     },
     "lib/media/pasted-image-20250525231601.png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 73712,
       "exportedPath": "lib/media/pasted-image-20250525231601.png",
       "dependencies": []
     },
     "lib/media/pasted-image-20250525231925.png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 57670,
       "exportedPath": "lib/media/pasted-image-20250525231925.png",
       "dependencies": []
     },
     "lib/media/pasted-image-20250525232112.png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 46621,
       "exportedPath": "lib/media/pasted-image-20250525232112.png",
       "dependencies": []
     },
     "lib/media/pasted-image-20250525232158.png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 89703,
       "exportedPath": "lib/media/pasted-image-20250525232158.png",
       "dependencies": []
     },
     "lib/media/pasted-image-20250526105943.png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 49555,
       "exportedPath": "lib/media/pasted-image-20250526105943.png",
       "dependencies": []
     },
     "lib/media/pasted-image-20250526112234.png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 78036,
       "exportedPath": "lib/media/pasted-image-20250526112234.png",
       "dependencies": []
     },
     "lib/media/pasted-image-20250526112534.png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 34821,
       "exportedPath": "lib/media/pasted-image-20250526112534.png",
       "dependencies": []
     },
     "lib/media/pasted-image-20250526112953.png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 15349,
       "exportedPath": "lib/media/pasted-image-20250526112953.png",
       "dependencies": []
     },
     "lib/media/pasted-image-20250526113657.png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 21956,
       "exportedPath": "lib/media/pasted-image-20250526113657.png",
       "dependencies": []
     },
     "assets/images/banner-unsplash.jpg": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 60828,
       "exportedPath": "assets/images/banner-unsplash.jpg",
       "dependencies": []
     },
     "lib/fonts/94f2f163d4b698242fef.otf": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 66800,
       "exportedPath": "lib/fonts/94f2f163d4b698242fef.otf",
       "dependencies": []
     },
     "lib/fonts/72505e6a122c6acd5471.woff2": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 104232,
       "exportedPath": "lib/fonts/72505e6a122c6acd5471.woff2",
       "dependencies": []
     },
     "lib/fonts/2d5198822ab091ce4305.woff2": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 104332,
       "exportedPath": "lib/fonts/2d5198822ab091ce4305.woff2",
       "dependencies": []
     },
     "lib/fonts/c8ba52b05a9ef10f4758.woff2": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 98868,
       "exportedPath": "lib/fonts/c8ba52b05a9ef10f4758.woff2",
       "dependencies": []
     },
     "lib/fonts/cb10ffd7684cd9836a05.woff2": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 106876,
       "exportedPath": "lib/fonts/cb10ffd7684cd9836a05.woff2",
       "dependencies": []
     },
     "lib/fonts/b5f0f109bc88052d4000.woff2": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 105804,
       "exportedPath": "lib/fonts/b5f0f109bc88052d4000.woff2",
       "dependencies": []
     },
     "lib/fonts/cbe0ae49c52c920fd563.woff2": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 106108,
       "exportedPath": "lib/fonts/cbe0ae49c52c920fd563.woff2",
       "dependencies": []
     },
     "lib/fonts/535a6cf662596b3bd6a6.woff2": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 111708,
       "exportedPath": "lib/fonts/535a6cf662596b3bd6a6.woff2",
       "dependencies": []
     },
     "lib/fonts/70cc7ff27245e82ad414.ttf": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 192740,
       "exportedPath": "lib/fonts/70cc7ff27245e82ad414.ttf",
       "dependencies": []
     },
     "lib/fonts/454577c22304619db035.ttf": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 161376,
       "exportedPath": "lib/fonts/454577c22304619db035.ttf",
       "dependencies": []
     },
     "lib/fonts/52ac8f3034507f1d9e53.ttf": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 191568,
       "exportedPath": "lib/fonts/52ac8f3034507f1d9e53.ttf",
       "dependencies": []
     },
     "lib/fonts/05b618077343fbbd92b7.ttf": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 155288,
       "exportedPath": "lib/fonts/05b618077343fbbd92b7.ttf",
       "dependencies": []
     },
     "lib/fonts/4bb6ac751d1c5478ff3a.woff2": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 7876,
       "exportedPath": "lib/fonts/4bb6ac751d1c5478ff3a.woff2",
       "dependencies": []
     },
     "lib/media/6155340132a851f6089e.svg": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 315,
       "exportedPath": "lib/media/6155340132a851f6089e.svg",
       "dependencies": []
     },
     "lib/html/file-tree.html": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 2373,
       "exportedPath": "lib/html/file-tree.html",
       "dependencies": []
     },
     "lib/scripts/webpage.js": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 47290,
       "exportedPath": "lib/scripts/webpage.js",
       "dependencies": []
     },
     "lib/media/favicon.png": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 1105,
       "exportedPath": "lib/media/favicon.png",
       "dependencies": []
     },
     "lib/styles/obsidian.css": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 138258,
       "exportedPath": "lib/styles/obsidian.css",
       "dependencies": []
     },
     "lib/styles/global-variable-styles.css": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 262,
       "exportedPath": "lib/styles/global-variable-styles.css",
       "dependencies": []
     },
     "lib/styles/main-styles.css": {
-      "modifiedTime": 1752501949188,
+      "modifiedTime": 1752502218364,
       "sourceSize": 23130,
       "exportedPath": "lib/styles/main-styles.css",
       "dependencies": []
