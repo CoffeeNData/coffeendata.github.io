@@ -1,0 +1,704 @@
+<!DOCTYPE html> <html lang="en"><head>
+<title>Defeating web API integrity controls in Android</title>
+<base href="..">
+<meta name="pathname" content="content/2025-09-07-defeating-api-integrity-controls.html">
+<meta name="description" content="Site Vault - Defeating web API integrity controls in Android">
+<meta property="og:title" content="Defeating web API integrity controls in Android">
+<meta property="og:description" content="Site Vault - Defeating web API integrity controls in Android">
+<meta property="og:type" content="website">
+<meta property="og:url" content="content/2025-09-07-defeating-api-integrity-controls.html">
+<meta property="og:image" content="assets/images/android-studio-device-manager.png">
+<meta charset="UTF-8"><meta property="og:site_name" content="Site Vault"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=1.0, maximum-scale=5.0"><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="site-lib/rss.xml"><script async="" id="webpage-script" src="site-lib/scripts/webpage.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script async="" id="graph-wasm-script" src="site-lib/scripts/graph-wasm.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script async="" id="graph-render-worker-script" src="site-lib/scripts/graph-render-worker.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><link rel="icon" href="site-lib/media/favicon.png"><link rel="stylesheet" href="site-lib/styles/obsidian.css"><link rel="preload" href="site-lib/styles/global-variable-styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="site-lib/styles/global-variable-styles.css"></noscript><link rel="preload" href="site-lib/styles/main-styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="site-lib/styles/main-styles.css"></noscript><style>body{--line-width:40em;--line-width-adaptive:40em;--file-line-width:40em;--sidebar-width:min(20em, 80vw);--collapse-arrow-size:11px;--tree-vertical-spacing:1.3em;--sidebar-margin:12px}:root{background-color:#202124}.sidebar{height:100%;font-size:14px;z-index:10;min-width:calc(var(--sidebar-width) + var(--divider-width-hover));max-width:calc(var(--sidebar-width) + var(--divider-width-hover));position:relative;overflow:hidden;overflow:clip;transition:min-width ease-in-out,max-width ease-in-out;transition-duration:.2s;contain:size}#left-sidebar{left:0}#right-sidebar{right:0}.sidebar.is-collapsed{min-width:0;max-width:0}.sidebar.floating{position:absolute}.sidebar .leaf-content{height:100%;min-width:calc(var(--sidebar-width) - var(--divider-width-hover));top:0;padding:var(--sidebar-margin);padding-top:4em;line-height:var(--line-height-tight);background-color:var(--background-secondary);transition:background-color,border-right,border-left,box-shadow;transition-duration:var(--color-fade-speed);transition-timing-function:ease-in-out;position:absolute;display:flex;flex-direction:column}.sidebar:not(.is-collapsed) .leaf-content{min-width:calc(max(100%,var(--sidebar-width)) - 3px);max-width:calc(max(100%,var(--sidebar-width)) - 3px)}#left-sidebar-content{left:0;border-top-right-radius:var(--radius-l);border-bottom-right-radius:var(--radius-l)}#right-sidebar-content{right:0;border-top-left-radius:var(--radius-l);border-bottom-left-radius:var(--radius-l)}.sidebar #left-sidebar-content,.sidebar #right-sidebar-content{contain:none!important;container-type:normal!important;animation:none!important}.sidebar:has(.leaf-content:empty):has(.topbar-content:empty){display:none}.sidebar-topbar{height:calc(2.3em + 2 * var(--sidebar-margin));width:var(--sidebar-width);padding:var(--sidebar-margin);z-index:1;position:fixed;display:flex;align-items:center;transition:width ease-in-out;transition-duration:inherit}.sidebar.is-collapsed .sidebar-topbar{width:calc(2.3em + var(--sidebar-margin) * 2)}.sidebar .sidebar-topbar.is-collapsed{width:0}#left-sidebar .sidebar-topbar{left:0;flex-direction:row;border-top-right-radius:var(--radius-l)}#right-sidebar .sidebar-topbar{right:0;flex-direction:row-reverse;border-top-left-radius:var(--radius-l)}#left-sidebar .topbar-content{margin-right:calc(2.3em + var(--sidebar-margin));flex-direction:row}#right-sidebar .topbar-content{margin-left:calc(2.3em + var(--sidebar-margin));flex-direction:row-reverse}.topbar-content{overflow:hidden visible;overflow:clip visible;width:100%;height:100%;display:flex;align-items:center;transition:inherit}.sidebar.is-collapsed .topbar-content{width:0;transition:inherit}.clickable-icon.sidebar-collapse-icon{background-color:transparent;color:var(--icon-color-focused);padding:2px!important;margin:0!important;height:100%!important;width:2.3em!important;margin-inline:0.14em!important;position:absolute}#left-sidebar .clickable-icon.sidebar-collapse-icon{transform:rotateY(180deg);right:var(--sidebar-margin)}#right-sidebar .clickable-icon.sidebar-collapse-icon{transform:rotateY(180deg);left:var(--sidebar-margin)}.clickable-icon.sidebar-collapse-icon svg.svg-icon{width:100%;height:100%}.feature-title{margin-left:1px;text-transform:uppercase;letter-spacing:.06em;margin-top:.75em;margin-bottom:.75em}.feature-header{display:flex;align-items:center;padding-top:0;font-size:1em;padding-left:0}body.floating-sidebars .sidebar{position:absolute}body{transition:background-color var(--color-fade-speed) ease-in-out}#navbar:not(:empty){display:flex;align-items:center;justify-content:space-between;padding:.5em 1em;width:100%}#main{display:flex;flex-direction:column;height:100%;width:100%;align-items:stretch;justify-content:center}#main-horizontal{display:flex;flex-direction:row;flex-grow:1;width:100%;align-items:stretch;justify-content:center}#center-content{flex-basis:100%;max-width:100%;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;transition:opacity .2s ease-in-out;contain:inline-size}.hide{opacity:0!important;transition:opacity .2s ease-in-out;pointer-events:none}#center-content>.obsidian-document{padding-left:2em;padding-right:1em;margin-bottom:0;width:100%;width:-webkit-fill-available;width:-moz-available;width:fill-available;transition:background-color var(--color-fade-speed) ease-in-out;border-top-right-radius:var(--window-radius,var(--radius-m));border-top-left-radius:var(--window-radius,var(--radius-m));overflow-x:hidden!important;overflow-y:auto!important;display:flex!important;flex-direction:column!important;align-items:center!important;contain:inline-size}body #center-content>.obsidian-document>.markdown-preview-sizer{padding-bottom:80vh;width:100%;max-width:var(--line-width);flex-basis:var(--line-width);transition:background-color var(--color-fade-speed) ease-in-out;contain:inline-size}#center-content>.obsidian-document>div{width:100%!important;transition:background-color var(--color-fade-speed) ease-in-out;contain:inline-size}#center-content>.obsidian-document:not([data-type=markdown]).embed{display:flex;padding:1em;height:100%;width:100%;align-items:center;justify-content:center}#center-content>.obsidian-document:not([data-type=markdown]).embed>*{max-width:100%;max-height:100%;object-fit:contain}:not(h1,h2,h3,h4,h5,h6,li):has(> :is(.math,table)){overflow-x:auto!important}#center-content>.obsidian-document:not([data-type=markdown]){overflow-x:auto;contain:content;padding:0;margin:0;height:100%}.obsidian-document[data-type=attachment]{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;width:100%}.obsidian-document[data-type=attachment]>*{outline:0;border:none;box-shadow:none}.obsidian-document[data-type=attachment] :is(img){max-width:90%;max-height:90%;object-fit:contain}.obsidian-document[data-type=attachment]>:is(audio){width:100%;max-width:min(90%,var(--line-width))}.obsidian-document[data-type=attachment]>:is(embed,iframe,video){width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain}.canvas-wrapper>:is(.header,.footer){z-index:100;position:absolute;display:flex;justify-content:center;flex-direction:column;width:100%;align-items:center}.scroll-highlight{position:absolute;width:100%;height:100%;pointer-events:none;z-index:1000;background-color:hsla(var(--color-accent-hsl),.25);opacity:0;padding:1em;inset:50%;translate:-50% -50%;border-radius:var(--radius-s)}</style><script defer="">async function loadIncludes(){let e=document.querySelectorAll("link[itemprop='include']");for(const t of e){let e=t.getAttribute("href");try{let o="";if(e.startsWith("https:")||e.startsWith("http:")||"file:"!=window.location.protocol){const n=await fetch(e);if(!n.ok){console.log("Could not include file: "+e),t?.remove();continue}o=await n.text()}else{const t=document.getElementById(btoa(encodeURI(e)));if(t){const e=JSON.parse(decodeURI(atob(t.getAttribute("value")??"")));o=e?.data??""}}let n=document.createRange().createContextualFragment(o);t.before(n),t.remove(),console.log("Included text: "+o),console.log("Included file: "+e)}catch(o){t?.remove(),console.log("Could not include file: "+e,o);continue}}}document.addEventListener("DOMContentLoaded",(()=>{loadIncludes()}));let isFileProtocol="file:"==location.protocol;function waitLoadScripts(e,t){let o=e.map((e=>document.getElementById(e+"-script")));!function e(n){let l=o[n],c=n+1;l?(l&&"true"!=l.getAttribute("loaded")||n<o.length&&e(c),n<o.length&&l.addEventListener("load",(()=>e(c)))):n<o.length?e(c):t()}(0)}</script></head><body class="publish css-settings-manager styled-scrollbars show-inline-title show-ribbon is-focused"><script defer="">let theme=localStorage.getItem("theme")||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");"dark"==theme?(document.body.classList.add("theme-dark"),document.body.classList.remove("theme-light")):(document.body.classList.add("theme-light"),document.body.classList.remove("theme-dark")),window.innerWidth<480?document.body.classList.add("is-phone"):window.innerWidth<768?document.body.classList.add("is-tablet"):window.innerWidth<1024?document.body.classList.add("is-small-screen"):document.body.classList.add("is-large-screen")</script><div class="parsed-feature-container" style="display: contents;"><link itemprop="include" href="site-lib/html/custom-head-content-content.html"></div><div id="main"><div id="navbar"></div><div id="main-horizontal"><div id="left-content" class="leaf" style="--sidebar-width: var(--sidebar-width-left);"><div id="left-sidebar" class="sidebar"><div class="sidebar-handle"></div><div class="sidebar-topbar"><div class="topbar-content"><div id="search-container"><div id="search-wrapper"><input enterkeyhint="search" type="search" spellcheck="false" placeholder="Search..."><div aria-label="Clear search" id="search-clear-button"></div></div></div></div><div class="clickable-icon sidebar-collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><path d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3Z"></path><path d="M10 4V20"></path><path d="M4 7H7"></path><path d="M4 10H7"></path><path d="M4 13H7"></path></svg></div></div><div class="sidebar-content-wrapper"><div id="left-sidebar-content" class="leaf-content"><link itemprop="include" href="site-lib/html/file-tree-content.html"></div></div><script defer="">let ls = document.querySelector("#left-sidebar"); ls.classList.toggle("is-collapsed", window.innerWidth < 768); ls.style.setProperty("--sidebar-width", localStorage.getItem("sidebar-left-width"));</script></div></div><div id="center-content" class="leaf"><div class="obsidian-document markdown-preview-view markdown-rendered node-insert-event is-readable-line-width allow-fold-headings allow-fold-lists show-indentation-guide show-properties" data-type="markdown"><style id="MJX-CHTML-styles"></style><pre class="frontmatter language-yaml" style="display: none;"><code class="language-yaml is-loaded"><span class="token key atrule">title</span><span class="token punctuation">:</span> Defeating web API integrity controls in Android</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre><div class="markdown-preview-sizer markdown-preview-section"><div class="header"><h1 class="page-title heading inline-title" id="Defeating_web_API_integrity_controls_in_Android_0">Defeating web API integrity controls in Android</h1><div class="data-bar"></div></div><div class="markdown-preview-pusher" style="width: 1px; height: 0.1px; margin-bottom: 0px;"></div><div class="el-h1"><h1 data-heading="Introduction" dir="auto" class="heading" id="Introduction_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Introduction</h1></div><div class="el-p"><p dir="auto">In this post, I will be showing how I could reverse engineer an Android application to find API endpoints and how to issue requests to it by defeating integrity checks. </p></div><div class="el-p"><p dir="auto">For legal reasons, I will be referencing the application being studied as "CASE_STUDY".</p></div><div class="el-p"><p dir="auto">CASE_STUDY is a great tool for finding services near you. It is used worldwide and a lot of people use it in a day to day basis. Finding accounts on CASE_STUDY about specific people can reveal a lot of information about a person of interest. This will be our case study today because of the density of the code and the protections put in place.</p></div><div class="el-h2"><h2 data-heading="Skills" dir="auto" class="heading" id="Skills_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Skills</h2></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Bypassing SSL Pinning</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Debugging applications using Frida and making scripts for it</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Rooting Android emulators</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>Identifying and understanding cryptography</li>
+</ul></div><div class="el-h2"><h2 data-heading="Skills not covered" dir="auto" class="heading" id="Skills_not_covered_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Skills not covered</h2></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Installation of the tools required</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Installation of the Android emulator</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Debugging/fixing own tools</li>
+</ul></div><div class="el-h1"><h1 data-heading="Disclaimer" dir="auto" class="heading" id="Disclaimer_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Disclaimer</h1></div><div class="el-p"><p dir="auto">This document is provided solely for academic and educational purposes. All reverse engineering and analysis were conducted on a publicly available Android application binary, in accordance with applicable reverse engineering exemptions for research and interoperability.</p></div><div class="el-p"><p dir="auto">No unauthorized access was attempted. No vulnerability was exploited. All sensitive information — including cryptographic keys, authentication tokens, endpoint identifiers, and service names — has been anonymized or redacted to prevent misuse. The purpose of this work is to demonstrate general techniques for understanding client-side integrity controls and cryptographic enforcement mechanisms.</p></div><div class="el-p"><p dir="auto">The application studied is referred to generically as “CASE_STUDY” to respect intellectual property and contractual boundaries. This work does not claim affiliation with, endorsement by, or criticism of any vendor or service. Any resemblance to a real product is incidental to the technical nature of the research.</p></div><div class="el-p"><p dir="auto">If any party believes this work unintentionally discloses proprietary or sensitive implementation details, the author welcomes private communication for resolution.</p></div><div class="el-h1"><h1 data-heading="First steps, looking at the app" dir="auto" class="heading" id="First_steps,_looking_at_the_app_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>First steps, looking at the app</h1></div><div class="el-p"><p dir="auto">The app allows users to find their contacts in CASE_STUDY, which can be abused to check large quantities of email addresses. I already knew this, and this was the reason I decided to research this topic.</p></div><div class="el-p"><p dir="auto">To start off, make sure to install an emulator of a well-used API level. My choice is usually API 31 because its mostly still maintained while keeping it old enough for most tools to work out of the box. You might want to update all software on the AVD (the emulator), including Play Services. This is because we will be using them for logging in.</p></div><div class="el-p"><p dir="auto">Wanting to abuse email lookups, our usual suspect would be anything related to our contacts. We can explore until we find the options under "More" section. The app seems to vary from region to region, but the endpoint I found is located under More&gt;Notifications&gt;Find Friends&gt;Find in your contacts.</p></div><div class="el-p"><p dir="auto">Now that we have located what actions trigger a contact lookup, we will proceed to try and intercept the requests made by the app to see where its reaching and what data is passed to it.</p></div><div class="el-h1"><h1 data-heading="Rooting the AVD and its reasons" dir="auto" class="heading" id="Rooting_the_AVD_and_its_reasons_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Rooting the AVD and its reasons</h1></div><div class="el-p"><p dir="auto">Usually we would simply set up a proxy and use BurpSuite or Wireshark, but this is a bit more complicated than that because of SSL Pinning.</p></div><div class="el-p"><p dir="auto">SSL pinning is a technique to prevent MITM attacks by binding a specific SSL/TLS certificate to a particular server or service. It is also notorious for being an excellent anti-analysis technique. Though, modern tools have advanced and we already have easy ways to bypass this.</p></div><div class="el-p"><p dir="auto">We will be using <a data-tooltip-position="top" aria-label="https://httptoolkit.com/" rel="noopener nofollow" class="external-link is-unresolved" href="https://httptoolkit.com/" target="_self">HTTP Toolkit</a>. But first, we need to root the Android device to allow HTTP Toolkit to take care of the SSL Pinning.</p></div><div class="el-p"><p dir="auto">To root the Android device, its as simple as downloading the <a data-tooltip-position="top" aria-label="https://github.com/newbit1/rootAVD" rel="noopener nofollow" class="external-link is-unresolved" href="https://github.com/newbit1/rootAVD" target="_self">rootAVD</a> repo and following the instructions. We might need to install additional updates for Magisk, which is automatically installed and setup by rootAVD.</p></div><div class="el-p"><p dir="auto">This tool will take care of all the processes needed to root an Android AVD. After its done running, we would simply "Cold boot" the AVD from Android Studio device manager.</p></div><div class="el-p"><p dir="auto"><span alt="assets/images/Android Studio Device Manager.png" src="assets/images/android-studio-device-manager.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Android Studio Device Manager.png" src="assets/images/android-studio-device-manager.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">We now would go into the newly installed Magisk app and install/update the required software. Its an easy process, so Im going to skip writing that.</p></div><div class="el-h1"><h1 data-heading="Bypassing SSL Pinning" dir="auto" class="heading" id="Bypassing_SSL_Pinning_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Bypassing SSL Pinning</h1></div><div class="el-p"><p dir="auto">We should now have a working rooted AVD and HTTP Toolkit installed. Our first step now is allowing all root access in a non-blocking way, which can mess up with HTTP Toolkit. To do this, simply go to the Magisk app &gt; Settings, and turn off "User Authentication" which would display a code-blocking pop up. After that, select "Superuser Access" and select "ADB only" which will only allow our external software to run with root. This also helps to avoid detection with apps that might check for root access.</p></div><div class="el-p"><p dir="auto">Once this is done, we should run HTTP Toolkit.</p></div><div class="el-p"><p dir="auto"><span alt="assets/images/HTTP Toolkit Menu.png" src="assets/images/http-toolkit-menu.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/HTTP Toolkit Menu.png" src="assets/images/http-toolkit-menu.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">My usual choice is "Android App via Frida". We will be using this, but since its prone to fail in newer devices I will show a quick overview of its alternative.</p></div><div class="el-h2"><h2 data-heading="Alternative to &quot;Android App via Frida&quot;" dir="auto" class="heading" id="Alternative_to_&quot;Android_App_via_Frida&quot;_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Alternative to "Android App via Frida"</h2></div><div class="el-p"><p dir="auto">Select Android Device via ADB. The process is fairly simple and will also bypass SSL pinning. The downside of this, is that it captures all system network traffic and also installs a VPN app (used only as proxy). This might trigger detection or problems identifying our wanted requests.</p></div><div class="el-h2"><h2 data-heading="Bypassing SSL pinning the easy way" dir="auto" class="heading" id="Bypassing_SSL_pinning_the_easy_way_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Bypassing SSL pinning the easy way</h2></div><div class="el-p"><p dir="auto">Select "Android App via Frida". Select the device, and select the app. Done. Now, all web requests will be intercepted seamlessly.</p></div><div class="el-p"><p dir="auto"><span alt="assets/images/HTTP Toolkit Logged Requests.png" src="assets/images/http-toolkit-logged-requests.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/HTTP Toolkit Logged Requests.png" src="assets/images/http-toolkit-logged-requests.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">Lets look at what we have. First, we want to only intercept traffic coming from the apps domain. So we put on the filter <code>hostname$=CASE_STUDY.com</code></p></div><div class="el-p"><p dir="auto"><span alt="assets/images/HTTP Toolkit Sample Captured Request.png" src="assets/images/http-toolkit-sample-captured-request.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/HTTP Toolkit Sample Captured Request.png" src="assets/images/http-toolkit-sample-captured-request.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">Much better now. Now, lets repeat the contact lookup process.</p></div><div class="el-p"><p dir="auto"><span alt="assets/images/HTTP Toolkit Before Capturing Important Request.png" src="assets/images/http-toolkit-before-capturing-important-request.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/HTTP Toolkit Before Capturing Important Request.png" src="assets/images/http-toolkit-before-capturing-important-request.png" target="_self"></span><br>
+<span alt="assets/images/HTTP Toolkit After Capturing Important Requests.png" src="assets/images/http-toolkit-after-capturing-important-requests.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/HTTP Toolkit After Capturing Important Requests.png" src="assets/images/http-toolkit-after-capturing-important-requests.png" target="_self"></span></p></div><div class="el-blockquote"><blockquote dir="auto">
+<p>Assuming weve added an email address we want to look up to our contacts. Im using "<a data-tooltip-position="top" aria-label="mailto:test@gmail.com" rel="noopener nofollow" class="external-link is-unresolved" href="mailto:test@gmail.com" target="_self">test@gmail.com</a>".</p>
+</blockquote></div><div class="el-p"><p dir="auto">Before clicking "Find in your contacts", Ive cleared the traffic history. Now, we only have 2 requests to analyse. </p></div><div class="el-p"><p dir="auto">The first one is made to the <code>bunsen.CASE_STUDY.com</code> domain, containing these headers:<br>
+<span alt="assets/images/Request 1.png" src="assets/images/request-1.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Request 1.png" src="assets/images/request-1.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">The next one is made to <code>REDACTED-api.CASE_STUDY.com</code>, and looks like this:<br>
+<span alt="assets/images/Request 2.png" src="assets/images/request-2.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Request 2.png" src="assets/images/request-2.png" target="_self"></span><br>
+I think its obvious now which one of these two is doing the lookup.</p></div><div class="el-h2"><h2 data-heading="Analising test results" dir="auto" class="heading" id="Analising_test_results_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Analising test results</h2></div><div class="el-p"><p dir="auto">We have now found a weird looking request to CASE_STUDY which is in fact in charge of returning user data.<br>
+Lets analyse this from top to bottom, starting from the URL.</p></div><div class="el-h3"><h3 data-heading="URL and GET parameters" dir="auto" class="heading" id="URL_and_GET_parameters_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>URL and GET parameters</h3></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Protocol: HTTPS</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Domain: <code>REDACTED-api.CASE_STUDY.com</code></li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>URI: <code>/user/friend_finder_v2</code></li>
+</ul></div><div class="el-blockquote"><blockquote dir="auto">
+<p>Note: The following table contains my theories at this moment of the analysis, which by no means are yet fully correct.</p>
+</blockquote></div><div class="el-table" dir="ltr" style="overflow-x: auto;"><table>
+<thead>
+<tr>
+<th dir="ltr">Parameter</th>
+<th dir="ltr">Theory</th>
+<th dir="ltr">Observations</th>
+<th dir="ltr">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td dir="ltr">time</td>
+<td dir="ltr">Unix time in seconds</td>
+<td dir="ltr">N/A</td>
+<td dir="auto">1752058603</td>
+</tr>
+<tr>
+<td dir="ltr">nonce</td>
+<td dir="ltr">Some kind of code to use as salt</td>
+<td dir="ltr">URL encoded and Base64 encoded</td>
+<td dir="ltr">tMTU6Q%3D%3D</td>
+</tr>
+<tr>
+<td dir="ltr">ywsid</td>
+<td dir="ltr">None, unknown</td>
+<td dir="ltr">Repeats in different requests</td>
+<td dir="ltr">TLD_YWSID</td>
+</tr>
+<tr>
+<td dir="ltr">device_type</td>
+<td dir="ltr">Just a device type</td>
+<td dir="ltr">Doesnt need much attention for now</td>
+<td dir="ltr">google%2Bemulator64_x86_64_arm64%2FSE1A.211212.001.B1</td>
+</tr>
+<tr>
+<td dir="ltr">app_version</td>
+<td dir="ltr">App version</td>
+<td dir="ltr">N/A</td>
+<td dir="auto">25.26.0-28252600</td>
+</tr>
+<tr>
+<td dir="ltr">cc</td>
+<td dir="ltr">Country code</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">US</td>
+</tr>
+<tr>
+<td dir="ltr">lang</td>
+<td dir="ltr">Language</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">en</td>
+</tr>
+<tr>
+<td dir="ltr">efs</td>
+<td dir="ltr">Account information/authentication?</td>
+<td dir="ltr">URL + Base64 encoded, but doesnt return a string</td>
+<td dir="ltr">i8m%2F6CTloWKb%2BwCGwHUL%2BjZ2hunIyXWs0pSBHhCCmKxwCX23HempE4MaITvDog4oDvSnUKw1qRntv%2Bwgq99BiHlGG132XjtQZ06wAME80Z4%3D</td>
+</tr>
+<tr>
+<td dir="ltr">signature</td>
+<td dir="ltr">Integrity check for the request</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr"><code>_8QSgm7K9sRY1jMTVm82KH4JXdW0%3D</code></td>
+</tr>
+</tbody>
+</table></div><div class="el-h3"><h3 data-heading="Headers" dir="auto" class="heading" id="Headers_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Headers</h3></div><div class="el-p"><p dir="auto">We see the payload is sent in <code>x-www-form-urlencoded</code> format. The cookies are often irrelevant and can be skipped, which is the case too. The user agent is handled by the app too. The X headers are the following:</p></div><div class="el-table" dir="ltr" style="overflow-x: auto;"><table>
+<thead>
+<tr>
+<th dir="ltr">Header</th>
+<th dir="ltr">Theory</th>
+<th dir="ltr">Observations</th>
+<th dir="ltr">Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td dir="ltr">X-Auth-Token-2</td>
+<td dir="ltr">Session token</td>
+<td dir="ltr">Used to authenticate requests</td>
+<td dir="ltr">REDACTED</td>
+</tr>
+<tr>
+<td dir="ltr">X-Bunsen-MAM</td>
+<td dir="ltr">Telemetry</td>
+<td dir="ltr">JSON format</td>
+<td dir="ltr"><code>{"hardware_model":"sdk_gphone64_x86_64,Google,ranchu","local_timezone_offset":"+00:00","unique_view_id":"4aa74903-fe60-REDACTED-047ecf47eb80","previous_unique_view_id":"932b92ad-00ed-4ecf-8422-388f4254632f","user_advertising_id":"00000000-0000-0000-0000-000000000000","session_id":"30877930-REDACTED-c688fa959650"}</code></td>
+</tr>
+<tr>
+<td dir="ltr">X-Foregrounded</td>
+<td dir="ltr">Are we running in foreground?</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">true</td>
+</tr>
+<tr>
+<td dir="ltr">X-Screen-Scale</td>
+<td dir="ltr">Screen size</td>
+<td dir="ltr">Maybe inches</td>
+<td dir="auto">2.625</td>
+</tr>
+</tbody>
+</table></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>The "X-Auth-Token" is assigned by the server, and can be gathered anytime by capturing a logged in request.</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>The "X-Bunsen-MAM" looks like telemetry or tracking information. We need to find out how its crafted.</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>The "X-Foregrounded" header seems straightforward, we just assume its always true.</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>The same goes for the "X-Screen-Scale". There is no reason to investigate further.</li>
+</ul></div><div class="el-h2"><h2 data-heading="Test conclusions" dir="auto" class="heading" id="Test_conclusions_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Test conclusions</h2></div><div class="el-p"><p dir="auto">Weve figured how the requests work, but we need to find out how some of the parameters are crafted.</p></div><div class="el-p"><p dir="auto">Here is a list of the data we need to gather:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>nonce</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>ywsid</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>efs</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>signature</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span>X-Bunsen-MAM</li>
+</ul></div><div class="el-h1"><h1 data-heading="Finding the code" dir="auto" class="heading" id="Finding_the_code_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Finding the code</h1></div><div class="el-p"><p dir="auto">Now that weve gathered some basic information, its time to find out how it all works from the inside. Reverse engineering experience as well as some Java and Android experience are recommended.</p></div><div class="el-p"><p dir="auto">Now, we will be using <a data-tooltip-position="top" aria-label="https://github.com/skylot/jadx" rel="noopener nofollow" class="external-link is-unresolved" href="https://github.com/skylot/jadx" target="_self">JADX-GUI</a> for reverse engineering the code. JADX works like Ghidra, IDA, Cutter, etc. but for Java and Android applications. Its a great choice because of its stability and ease of use. It also supports a variety of plugins which can really help with the tasks.</p></div><div class="el-p"><p dir="auto">Before just opening the APK, we will first need to extract it or get a copy. There are a lot of ways to do it, but my preferred one is downloading it on my personal phone, sharing it through any file-sharing service and download it in my main workstation.</p></div><div class="el-p"><p dir="auto">Once we have the APK file at hand, we can start getting our hands dirty.</p></div><div class="el-p"><p dir="auto">Well fire up Jadx and load the APK file. It might take a while. After it finishes loading, I also recommend selecting Tools &gt; Decompile all classes. This will also take a while, but will make things faster in the long run as well as fixing some decompilation errors. Once done, save it to a project file.</p></div><div class="el-p"><p dir="auto"><span alt="assets/images/JADX Menu.png" src="assets/images/jadx-menu.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/JADX Menu.png" src="assets/images/jadx-menu.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">There is a lot of things to look at, so lets not get nervous. My usual approach is to find a string to look for in the code, then moving from there. A strong election would be the endpoint, which in this case is <code>/user/friend_finder_v2</code>. We will keep removing characters from the beginning until we find what we want.</p></div><div class="el-p"><p dir="auto"><span alt="assets/images/JADX Search Box.png" src="assets/images/jadx-search-box.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/JADX Search Box.png" src="assets/images/jadx-search-box.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">Which points here:<br>
+<span alt="assets/images/Code sample.png" src="assets/images/code-sample.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Code sample.png" src="assets/images/code-sample.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">Fortunately for us, JADX renames variables and classes to a better name choosing automatically.<br>
+Lets dig into the <code>FriendFinderRequest</code> class.<br>
+<span alt="assets/images/API code sample.png" src="assets/images/api-code-sample.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/API code sample.png" src="assets/images/api-code-sample.png" target="_self"></span><br>
+We got redirected to <code>ApiV1NetworkingRequest</code>. Might be some issues with Jadx renamings, but lets stay here and read the code to see if we find something interesting.</p></div><div class="el-p"><p dir="auto">Indeed, we see things that start making sense:<br>
+<span alt="assets/images/API Code Found Parameters.png" src="assets/images/api-code-found-parameters.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/API Code Found Parameters.png" src="assets/images/api-code-found-parameters.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">This is worth reverse engineering. Lets work a bit on the function to have a better understanding of it.<br>
+After some superficial work on the variables, it looks like this:<br>
+<span alt="assets/images/Sample code with the EFS calculation details.png" src="assets/images/sample-code-with-the-efs-calculation-details.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Sample code with the EFS calculation details.png" src="assets/images/sample-code-with-the-efs-calculation-details.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">First of all, lets bookmark this class. Second, lets dig into the efs calculation.<br>
+<span alt="assets/images/Exact code that calls the EFS generation.png" src="assets/images/exact-code-that-calls-the-efs-generation.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Exact code that calls the EFS generation.png" src="assets/images/exact-code-that-calls-the-efs-generation.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">Were passing <code>CASE_STUDYQuery.d</code> to the URL encoder before adding it to the <code>httpStrBuilder</code>, which will be used for making the request. It is not clear what this first variable is for, even by looking at the code:<br>
+<span alt="assets/images/Code sample 2.png" src="assets/images/code-sample-2.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Code sample 2.png" src="assets/images/code-sample-2.png" target="_self"></span><br>
+So lets now dig into the <code>CASE_STUDYQuery.a</code> function.<br>
+<span alt="assets/images/Sample code 2.png" src="assets/images/sample-code-2.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Sample code 2.png" src="assets/images/sample-code-2.png" target="_self"></span></p></div><div class="el-h1"><h1 data-heading="Defeating cryptography" dir="auto" class="heading" id="Defeating_cryptography_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Defeating cryptography</h1></div><div class="el-p"><p dir="auto">It iterates through a map and is passed to <code>APIUtil.a</code> before returning. Lets see what it is.<br>
+<span alt="assets/images/API encryption utils code.png" src="assets/images/api-encryption-utils-code.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/API encryption utils code.png" src="assets/images/api-encryption-utils-code.png" target="_self"></span><br>
+An overall explanation of what this function does is:</p></div><div class="el-ol"><ol>
+<li data-line="0" dir="auto">Take a Map</li>
+<li data-line="1" dir="auto">Create a 500 character string builder object</li>
+<li data-line="2" dir="auto">Cast to string and append each element into the new string builder</li>
+<li data-line="3" dir="auto">Encrypt the string.</li>
+</ol></div><div class="el-p"><p dir="auto">We also have some logs that hint us what were looking to. We now know the EFS is encrypted, lets dig a bit more into this function. Remember to bookmark interesting functions.</p></div><div class="el-p"><p dir="auto">Lets see what kind of encryption were dealing with. Lets see the line <code>Cipher cipher = Cipher.getInstance(FileEncryptionUtil.CIPHER_TRANSFORMATION);</code>. If we follow the <code>CIPHER_TRANSFORMATION</code> we will be directed into the encryption library.<br>
+<span alt="assets/images/Encryption specifications.png" src="assets/images/encryption-specifications.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Encryption specifications.png" src="assets/images/encryption-specifications.png" target="_self"></span><br>
+So we know we are dealing we AES encryption, using CBC mode and PKCS5 padding. Also, were using UTF-8 encoding for the text. The IV is 16 bytes long.</p></div><div class="el-p"><p dir="auto">Dealing with AES encryption, both the server and the client should know the encryption key. This leaves the code with 2 options:</p></div><div class="el-ol"><ol>
+<li data-line="0" dir="auto">The server gives us the means to calculate the key and then use it at runtime (we assume not, since we have looked at the web requests already)</li>
+<li data-line="1" dir="auto">The key is somewhere in the code.</li>
+</ol></div><div class="el-p"><p dir="auto">Lets try and find the key.</p></div><div class="el-p"><p dir="auto">After the efs string is crafted, its passed to the cipher object, which first requires additional initialization. Lets see the line:</p></div><div class="el-pre"><pre class="language-java"><code data-line="0" class="language-java is-loaded">aesCipher<span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">SecretKeySpec</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">BigInteger</span><span class="token punctuation">(</span><span class="token class-name">CASE_STUDYWebStrings</span><span class="token punctuation">.</span><span class="token function">a</span><span class="token punctuation">(</span><span class="token class-name">CASE_STUDYWebStrings</span><span class="token punctuation">.</span>l<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toByteArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"AES"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">IvParameterSpec</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token number">16</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-p"><p dir="auto">Looking at the <a data-tooltip-position="top" aria-label="https://docs.oracle.com/javase/8/docs/api/javax/crypto/spec/SecretKeySpec.html" rel="noopener nofollow" class="external-link is-unresolved" href="https://docs.oracle.com/javase/8/docs/api/javax/crypto/spec/SecretKeySpec.html" target="_self">Java docs</a>, we can see <code>SecretKeySpec</code> accepts either 2 or 4 parameters. Since we are using 2, we know which overload is it.<br>
+The first parameter <code>new BigInteger(CASE_STUDYWebStrings.a(CASE_STUDYWebStrings.l), 16).toByteArray()</code> is the key used. The second parameter is the algorithm.<br>
+There is a lot of processing done here, so lets make a step by step breakdown</p></div><div class="el-ol"><ol>
+<li data-line="0" dir="auto"><code>CASE_STUDYWebStrings.a</code> method loads the <code>CASE_STUDYWebStrings.l</code> variable.</li>
+<li data-line="1" dir="auto">The result is then converted into a big integer</li>
+<li data-line="2" dir="auto">The result is then converted into a byte array.</li>
+</ol></div><div class="el-p"><p dir="auto">Lets see what the <code>CASE_STUDYWebStrings</code> class is for:<br>
+<span alt="assets/images/Found obfuscated strings.png" src="assets/images/found-obfuscated-strings.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Found obfuscated strings.png" src="assets/images/found-obfuscated-strings.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">Might look bad, but don't get scared. We hit the sweet spot!</p></div><div class="el-p"><p dir="auto">The code brings no obfuscation whatsoever, and this looks manually obfuscated. So this must be sensitive. This obfuscation is actually really easy to defeat and was probably implemented to avoid searching for this strings.</p></div><div class="el-p"><p dir="auto">Just by looking at the variables they look like reversed base64 encoded strings. This is confirmed by the method <code>CASE_STUDYWebStrings.a</code> which we will rename to "`decodeStr"<br>
+<span alt="assets/images/Decode from reversed base64.png" src="assets/images/decode-from-reversed-base64.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Decode from reversed base64.png" src="assets/images/decode-from-reversed-base64.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">We can only assume that <code>Base64Coder2.a</code> is actually what decodes base64, so lets rename that too.<br>
+<span alt="assets/images/Decode from reverse base64 after variable rename.png" src="assets/images/decode-from-reverse-base64-after-variable-rename.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Decode from reverse base64 after variable rename.png" src="assets/images/decode-from-reverse-base64-after-variable-rename.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">Lets get back to what we were looking for: <code>CASE_STUDYWebStrings.l</code>. Lets rename that to <code>AES_KEY</code>. To see what the key is, we dont need any fancy coding. Lets just open <a data-tooltip-position="top" aria-label="https://gchq.github.io/CyberChef/" rel="noopener nofollow" class="external-link is-unresolved" href="https://gchq.github.io/CyberChef/" target="_self">CyberChef</a> and do our thing there.</p></div><div class="el-p"><p dir="auto">We first clean the string:<br>
+<span alt="assets/images/CyberChef 1.png" src="assets/images/cyberchef-1.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/CyberChef 1.png" src="assets/images/cyberchef-1.png" target="_self"></span><br>
+The decode it:<br>
+<span alt="assets/images/CyberChef 2.png" src="assets/images/cyberchef-2.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/CyberChef 2.png" src="assets/images/cyberchef-2.png" target="_self"></span><br>
+Which leaves us with the key: <code>AES_KEY</code>.<br>
+The IV would now be an empty 16 byte array, so theres nothing really we should do.</p></div><div class="el-p"><p dir="auto">So, after all the information we have on the EFS, we can craft a graph to understand it better:<br>
+<span alt="assets/images/EFS encryption flowchart.png" src="assets/images/efs-encryption-flowchart.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/EFS encryption flowchart.png" src="assets/images/efs-encryption-flowchart.png" target="_self"></span><br>
+Following this process in reverse will give us the original string. Lets try!<br>
+<span alt="assets/images/Decryption demonstration.png" src="assets/images/decryption-demonstration.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Decryption demonstration.png" src="assets/images/decryption-demonstration.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">We got it!</p></div><div class="el-h1"><h1 data-heading="Finishing the EFS" dir="auto" class="heading" id="Finishing_the_EFS_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Finishing the EFS</h1></div><div class="el-p"><p dir="auto">We still have to find out what those parameters are. Lets look for the string "y_device" in Jadx:<br>
+<span alt="assets/images/Search for y_device.png" src="assets/images/search-for-y_device.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Search for y_device.png" src="assets/images/search-for-y_device.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">This one looks like a nice candidate, since we have a clear view of what it does:<br>
+<span alt="assets/images/Found candidate for y_device.png" src="assets/images/found-candidate-for-y_device.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Found candidate for y_device.png" src="assets/images/found-candidate-for-y_device.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">This is the class <code>DeviceInfo3</code>, which actually gives us plenty of information:<br>
+<span alt="assets/images/Code of y_device assignment.png" src="assets/images/code-of-y_device-assignment.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Code of y_device assignment.png" src="assets/images/code-of-y_device-assignment.png" target="_self"></span><br>
+It gives us nice sources for the <code>ywsid</code>, the <code>device</code>, <code>y_device</code>, etc. Lets bookmark it.</p></div><div class="el-p"><p dir="auto"><code>y_device</code> is assigned earlier in the code:<br>
+<span alt="assets/images/Origin of y_device.png" src="assets/images/origin-of-y_device.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Origin of y_device.png" src="assets/images/origin-of-y_device.png" target="_self"></span><br>
+Lets see what this function does:<br>
+<span alt="assets/images/y_device generation function.png" src="assets/images/y_device-generation-function.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/y_device generation function.png" src="assets/images/y_device-generation-function.png" target="_self"></span><br>
+Its a very simple code snippet. The <code>y_device</code> parameters is actually referenced as <code>KEY_Y_DEVICE_ID</code> in the code. This function checks if its set somewhere in the app settings (we dont really care a lot about that part), but we see how its generated. Its just a random UUID which is prepended with a "y_".</p></div><div class="el-p"><p dir="auto">Lets find out the <code>device</code> parameter, which is also set earlier in the code:<br>
+<span alt="assets/images/device origin shown in the code.png" src="assets/images/device-origin-shown-in-the-code.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/device origin shown in the code.png" src="assets/images/device-origin-shown-in-the-code.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">This code is not very easy to understand if you dont have experience with Android:<br>
+<span alt="assets/images/device checks.png" src="assets/images/device-checks.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/device checks.png" src="assets/images/device-checks.png" target="_self"></span><br>
+What this does is get your unique Android ID. It then checks if something has gone wrong or the ID is specifically <code>9774d56d682e549c</code>, which is a magic number. This means it is not unique and there are more devices with this Android ID, such as emulators or privacy focused versions.</p></div><div class="el-p"><p dir="auto">Knowing that its an Android ID, we know that the <code>device</code> variable is simply a random 16 character string.</p></div><div class="el-p"><p dir="auto">The code that executes if we have a magic ID is a fallback mechanism to set a new trackable ID for the installation, so we dont really care about it.</p></div><div class="el-p"><p dir="auto">We now know how to generate an EFS from scratch.<br>
+<span alt="assets/images/EFS content generation flowchart.png" src="assets/images/efs-content-generation-flowchart.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/EFS content generation flowchart.png" src="assets/images/efs-content-generation-flowchart.png" target="_self"></span></p></div><div class="el-h1"><h1 data-heading="Finding the ywsid" dir="auto" class="heading" id="Finding_the_ywsid_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Finding the ywsid</h1></div><div class="el-p"><p dir="auto">We have already found a way to generate an arbitrary EFS. We now need to find the rest of the parameters used in the signature calculation before proceeding, since they will be used in the process.</p></div><div class="el-p"><p dir="auto">Lets continue digging into the previous code since we saw something about the <code>ywsid</code>:<br>
+<span alt="assets/images/Back to check for the ywsid.png" src="assets/images/back-to-check-for-the-ywsid.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Back to check for the ywsid.png" src="assets/images/back-to-check-for-the-ywsid.png" target="_self"></span><br>
+We can see it is assigned in the constructor:<br>
+<span alt="assets/images/ywsid is assigned in the constructor.png" src="assets/images/ywsid-is-assigned-in-the-constructor.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/ywsid is assigned in the constructor.png" src="assets/images/ywsid-is-assigned-in-the-constructor.png" target="_self"></span><br>
+Following XREFs, we can see its called by an upper class:<br>
+<span alt="assets/images/ywsid XREFs.png" src="assets/images/ywsid-xrefs.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/ywsid XREFs.png" src="assets/images/ywsid-xrefs.png" target="_self"></span><br>
+<span alt="assets/images/Only XREF for the ywsid.png" src="assets/images/only-xref-for-the-ywsid.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Only XREF for the ywsid.png" src="assets/images/only-xref-for-the-ywsid.png" target="_self"></span><br>
+We can safely rename "str" to ywsid since its confirmed it is that. Again, lets do another XREF search for the constructor. We see there are two results:<br>
+<span alt="assets/images/XREF for the constructor.png" src="assets/images/xref-for-the-constructor.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/XREF for the constructor.png" src="assets/images/xref-for-the-constructor.png" target="_self"></span><br>
+Notice the second result calls an "invoke" method. This usually means its a synthetic class. Synthetic classes are "made up" by the Java/Kotlin compiler to make things such as lambdas, anonymous classes or other behind-the-scenes code structures work. This can result in unpredictable and confusing decompilation results, so we should avoid it unless its strictly necessary. Lets just use the first one.<br>
+<span alt="assets/images/First XREF result.png" src="assets/images/first-xref-result.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/First XREF result.png" src="assets/images/first-xref-result.png" target="_self"></span><br>
+The code seems pretty straightforward. Lets rename some of the variables first for readability. Notice I renamed <code>CASE_STUDYWebStrings.b</code> to <code>CASE_STUDYWebStrings.ywsid</code>, which could be easily deduced by the codeflow.<br>
+<span alt="assets/images/Codeflow sample.png" src="assets/images/codeflow-sample.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Codeflow sample.png" src="assets/images/codeflow-sample.png" target="_self"></span><br>
+We know its in the <code>CASE_STUDYWebStrings</code> class, lets take a look at that again.<br>
+<span alt="assets/images/WebStrings.png" src="assets/images/webstrings.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/WebStrings.png" src="assets/images/webstrings.png" target="_self"></span><br>
+The code shows us there are two possible values for the ywsid. We already know one of the options by the request weve captured, but lets see which criteria it needs to meet. After some work on the class, it looks like this:<br>
+<span alt="assets/images/WebStrings reverse engineering.png" src="assets/images/webstrings-reverse-engineering.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/WebStrings reverse engineering.png" src="assets/images/webstrings-reverse-engineering.png" target="_self"></span><br>
+After some research on the code, we find out that the <code>ywsid</code> is actually static. It <em>does</em> try to check if we are in a subdomain, but the value is never changed so it will always use the <code>TLD_YWSID</code>.</p></div><div class="el-p"><p dir="auto">We conclude the <code>ywsid</code> is: <code>TLD_YWSID</code></p></div><div class="el-h1"><h1 data-heading="Finding the time and nonce" dir="auto" class="heading" id="Finding_the_time_and_nonce_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Finding the time and nonce</h1></div><div class="el-p"><p dir="auto">These two we have seen them before in an earlier stage of our research. Lets get back to the <code>ApiV1NetworkingRequest</code> class.<br>
+<span alt="assets/images/Time calculation.png" src="assets/images/time-calculation.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Time calculation.png" src="assets/images/time-calculation.png" target="_self"></span><br>
+The time and nonce are very easy to make.<br>
+The <code>time</code> parameter is the UNIX time in seconds, since we can see it takes milliseconds and divides it by 1000.<br>
+<span alt="assets/images/Pasted image 20250710151717.png" src="assets/images/pasted-image-20250710151717.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Pasted image 20250710151717.png" src="assets/images/pasted-image-20250710151717.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">In the other hand, the nonce is just a base64 encoded random 4 byte value. Done too.</p></div><div class="el-h1"><h1 data-heading="Defeating HMACs" dir="auto" class="heading" id="Defeating_HMACs_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Defeating HMACs</h1></div><div class="el-p"><p dir="auto">We will now dig into calculating the signature. Staying in the same class as before, we can see where its made, right after the <code>efs</code>:<br>
+<span alt="assets/images/Signature code sample.png" src="assets/images/signature-code-sample.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Signature code sample.png" src="assets/images/signature-code-sample.png" target="_self"></span><br>
+We can see the signature is actually crafted in the try-catch statement. Lets work it out from there and rename variables accordingly.<br>
+<span alt="assets/images/Signature HMAC calculation.png" src="assets/images/signature-hmac-calculation.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Signature HMAC calculation.png" src="assets/images/signature-hmac-calculation.png" target="_self"></span><br>
+We can see the signature is calculated here. Its an HMAC using SHA1 algorithm. Looking at the code, we can see how it was made:<br>
+<span alt="assets/images/Signature calculation flow chart.png" src="assets/images/signature-calculation-flow-chart.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Signature calculation flow chart.png" src="assets/images/signature-calculation-flow-chart.png" target="_self"></span><br>
+Now we only need to find how the URI is made. The code is very dense and contains a lot of unknown information.</p></div><div class="el-h1"><h1 data-heading="Logging information with Frida" dir="auto" class="heading" id="Logging_information_with_Frida_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Logging information with Frida</h1></div><div class="el-p"><p dir="auto">If we were on a Windows or Linux based system, we would simply debug it using a tool such as x64dbg, and set breakpoints wherever we want. When working with Android applications, this is a bit different. This is why we will be using Frida for this task.</p></div><div class="el-p"><p dir="auto">"<em>Frida lets you inject snippets of JavaScript or your own library into native apps on Windows, macOS, GNU/Linux, iOS, watchOS, tvOS, Android, FreeBSD, and QNX.</em>"</p></div><div class="el-blockquote"><blockquote dir="auto">
+<p>Source: <a rel="noopener nofollow" class="external-link is-unresolved" href="https://frida.re/docs/home/" target="_self">https://frida.re/docs/home/</a></p>
+</blockquote></div><div class="el-p"><p dir="auto">We dont really know what is being passed to the HMAC calculation, so lets hook and print the contents of all the steps in the code. By logging <code>StringBuilder</code> operations, we can see what is going on.</p></div><div class="el-p"><p dir="auto">Before digging further, we need to keep in mind that when renaming variables inside of JADX, the names on the original APK havent been really changed. This is why we need to export the mappings from JADX to hook the specific code snippets. In this case, the class <code>ApiV1NetworkingRequest</code> was originally <code>com.CASE_STUDY.android.g11.e</code>. With this mappings, we can manually translate our reverse engineered code to the original names. To save the mappings, you can go in JADX and select File &gt; Save mappings as... and select the one of our choosing. Usually, ProGuard is a good choice, since its widely used and human readable. To find the names, just open the mappings in a text editor and look for the renamed function. You will easily find the original name.</p></div><div class="el-p"><p dir="auto">Here are the current project mappings:</p></div><div class="el-pre"><pre class="language-proguard"><code data-line="0" class="language-proguard is-loaded">com.CASE_STUDY.android.bp1.a -&gt; com.CASE_STUDY.android.bp1.a:
+    java.lang.Object a -&gt; subdomain
+    java.lang.String a() -&gt; getFQDN
+com.CASE_STUDY.android.et0.w -&gt; com.CASE_STUDY.android.et0.HomeBodyComponentFactory:
+com.CASE_STUDY.android.g11.e -&gt; com.CASE_STUDY.android.g11.e:
+    com.CASE_STUDY.android.td1.e j -&gt; CASE_STUDYQuery
+com.CASE_STUDY.android.td1.a -&gt; com.CASE_STUDY.android.td1.Base64Coder:
+    byte[] a(java.lang.String) -&gt; decode
+    char[] b(byte[]) -&gt; encode
+com.CASE_STUDY.android.td1.e -&gt; com.CASE_STUDY.android.td1.e:
+    java.security.SecureRandom g -&gt; secureRandom
+    java.util.HashSet i -&gt; deviceInfo
+com.CASE_STUDY.android.td1.f -&gt; com.CASE_STUDY.android.td1.f:
+    java.lang.String a -&gt; REDACTEDapi
+    java.lang.String b -&gt; ywsid
+    java.lang.String c -&gt; hmacSecret
+    com.CASE_STUDY.android.bp1.a e -&gt; errorLogInfo
+    java.lang.String f -&gt; TLD_YWSID
+    java.lang.String g -&gt; TLD_HMAC_SECRET
+    java.lang.String i -&gt; SUBDOMAIN_YWSID
+    java.lang.String l -&gt; AES_KEY
+    java.lang.String m -&gt; BIZ_ACTIVITY_NAME
+    java.lang.String o -&gt; packageName
+    java.lang.String a(java.lang.String) -&gt; decodeStr
+com.CASE_STUDY.android.x3.a -&gt; com.CASE_STUDY.android.x3.Concatenate:
+    java.lang.String a(java.lang.String,java.lang.String) -&gt; concatenate
+com.CASE_STUDY.android.xo1.a -&gt; com.CASE_STUDY.android.xo1.a:
+    java.lang.String a(java.util.Map) -&gt; encryptEfs
+com.CASE_STUDY.android.xt1.k -&gt; com.CASE_STUDY.android.xt1.k:
+    void h(java.lang.Object,java.lang.String) -&gt; checkParamIsSet
+com.CASE_STUDY.android.yt.h -&gt; com.CASE_STUDY.android.yt.h:
+    android.content.Context a -&gt; context
+    java.lang.String b -&gt; device
+    java.lang.String c -&gt; y_device
+    android.content.SharedPreferences i -&gt; sharedPreferences
+    android.content.SharedPreferences c() -&gt; getSharedPreferences
+    java.lang.String d() -&gt; getYDevice
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-p"><p dir="auto">Using this, we can craft the Frida script. It will look something like this:</p></div><div class="el-pre"><pre class="language-js"><code data-line="0" class="language-js is-loaded"><span class="token maybe-class-name">Java</span><span class="token punctuation">.</span><span class="token method function property-access">perform</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token maybe-class-name">StringBuilder</span> <span class="token operator">=</span> <span class="token maybe-class-name">Java</span><span class="token punctuation">.</span><span class="token method function property-access">use</span><span class="token punctuation">(</span><span class="token string">"java.lang.StringBuilder"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> <span class="token maybe-class-name">TargetClass</span> <span class="token operator">=</span> <span class="token maybe-class-name">Java</span><span class="token punctuation">.</span><span class="token method function property-access">use</span><span class="token punctuation">(</span><span class="token string">"com.CASE_STUDY.android.g11.e"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">let</span> isInSignRequest <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+
+  <span class="token maybe-class-name">TargetClass</span><span class="token punctuation">.</span><span class="token property-access">i</span><span class="token punctuation">.</span><span class="token method function property-access">overload</span><span class="token punctuation">(</span><span class="token string">"java.lang.String"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token method-variable function-variable method function property-access">implementation</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">uri</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token console class-name">console</span><span class="token punctuation">.</span><span class="token method function property-access">log</span><span class="token punctuation">(</span><span class="token string">"\n=== [*] signRequest (i) called with: "</span> <span class="token operator">+</span> uri <span class="token operator">+</span> <span class="token string">" ==="</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    isInSignRequest <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token method function property-access">i</span><span class="token punctuation">(</span>uri<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    isInSignRequest <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token console class-name">console</span><span class="token punctuation">.</span><span class="token method function property-access">log</span><span class="token punctuation">(</span><span class="token string">"=== [*] signRequest (i) finished ===\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword control-flow">return</span> result<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">function</span> <span class="token function">safeLog</span><span class="token punctuation">(</span><span class="token parameter">prefix<span class="token punctuation">,</span> value</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword control-flow">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>isInSignRequest<span class="token punctuation">)</span> <span class="token keyword control-flow">return</span><span class="token punctuation">;</span>
+    <span class="token keyword control-flow">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> value <span class="token operator">===</span> <span class="token string">"string"</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> aesPattern <span class="token operator">=</span> <span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">\bAES\b|\baes-128-cbc\b|\bAES\/CBC\/PKCS5Padding\b</span><span class="token regex-delimiter">/</span><span class="token regex-flags">i</span></span><span class="token punctuation">;</span>
+      <span class="token keyword control-flow">if</span> <span class="token punctuation">(</span>aesPattern<span class="token punctuation">.</span><span class="token method function property-access">test</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword control-flow">return</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token console class-name">console</span><span class="token punctuation">.</span><span class="token method function property-access">log</span><span class="token punctuation">(</span>prefix <span class="token operator">+</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token maybe-class-name">StringBuilder</span><span class="token punctuation">.</span><span class="token property-access">append</span><span class="token punctuation">.</span><span class="token method function property-access">overload</span><span class="token punctuation">(</span><span class="token string">"java.lang.String"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token method-variable function-variable method function property-access">implementation</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>
+    <span class="token parameter">str</span>
+  <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">safeLog</span><span class="token punctuation">(</span><span class="token string">"[StringBuilder.append(String)] -&gt; "</span><span class="token punctuation">,</span> str<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword control-flow">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token method function property-access">append</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+  <span class="token maybe-class-name">StringBuilder</span><span class="token punctuation">.</span><span class="token property-access">append</span><span class="token punctuation">.</span><span class="token method function property-access">overload</span><span class="token punctuation">(</span><span class="token string">"java.lang.Object"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token method-variable function-variable method function property-access">implementation</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>
+    <span class="token parameter">obj</span>
+  <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">safeLog</span><span class="token punctuation">(</span><span class="token string">"[StringBuilder.append(Object)] -&gt; "</span><span class="token punctuation">,</span> obj<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword control-flow">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token method function property-access">append</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+  <span class="token maybe-class-name">StringBuilder</span><span class="token punctuation">.</span><span class="token property-access">append</span><span class="token punctuation">.</span><span class="token method function property-access">overload</span><span class="token punctuation">(</span><span class="token string">"char"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token method-variable function-variable method function property-access">implementation</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">c</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">safeLog</span><span class="token punctuation">(</span><span class="token string">"[StringBuilder.append(char)] -&gt; "</span><span class="token punctuation">,</span> c<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword control-flow">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token method function property-access">append</span><span class="token punctuation">(</span>c<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+  <span class="token maybe-class-name">StringBuilder</span><span class="token punctuation">.</span><span class="token property-access">toString</span><span class="token punctuation">.</span><span class="token method-variable function-variable method function property-access">implementation</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token method function property-access">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">safeLog</span><span class="token punctuation">(</span><span class="token string">"[StringBuilder.toString()] =&gt; "</span><span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword control-flow">return</span> result<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+  <span class="token maybe-class-name">StringBuilder</span><span class="token punctuation">.</span><span class="token property-access">$init</span><span class="token punctuation">.</span><span class="token method function property-access">overload</span><span class="token punctuation">(</span><span class="token string">"int"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token method-variable function-variable method function property-access">implementation</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">capacity</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">safeLog</span><span class="token punctuation">(</span><span class="token string">"[StringBuilder constructor] capacity: "</span><span class="token punctuation">,</span> capacity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword control-flow">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token method function property-access">$init</span><span class="token punctuation">(</span>capacity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token console class-name">console</span><span class="token punctuation">.</span><span class="token method function property-access">log</span><span class="token punctuation">(</span><span class="token string">"StringBuilder request logging script loaded successfully."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-p"><p dir="auto">Now, we need to install the Frida server into the Android device. Given were using an AVD, were using the x86_64 architecture. We can find the appropriate server in the <a data-tooltip-position="top" aria-label="https://github.com/frida/frida/releases" rel="noopener nofollow" class="external-link is-unresolved" href="https://github.com/frida/frida/releases" target="_self">Frida release page</a> with our architecture. After downloading it, we can upload it to the AVD using ADB.</p></div><div class="el-pre"><pre class="language-sh"><code data-line="0" class="language-sh is-loaded">adb push frida-server /data/local/tmp/.
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-p"><p dir="auto">Then get into a shell and set up the permissions:</p></div><div class="el-pre"><pre class="language-text"><code data-line="0" class="language-text is-loaded">adb shell
+$ su
+# chown root:root /data/local/tmp/frida-server
+# chmod 0 /data/local/tmp/frida-server
+# chmod +rx /data/local/tmp/frida-server
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-p"><p dir="auto">And execute it:</p></div><div class="el-pre"><pre class="language-text"><code data-line="0" class="language-text is-loaded"># /data/local/tmp/frida-server
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-p"><p dir="auto">It will produce no output. Dont worry about this. Now, we can start playing around with Frida. Make sure to have Frida installed in your system too.</p></div><div class="el-p"><p dir="auto">Lets find our script and run it. Make sure to open up the app first in the AVD or else it wont work.</p></div><div class="el-pre"><pre class="language-powershell"><code data-line="0" class="language-powershell is-loaded"><span class="token function">PS</span>&gt; frida <span class="token operator">-</span>U <span class="token operator">-</span>n CASE_STUDY <span class="token operator">-</span>l <span class="token punctuation">.</span>\logStringBuilderRequest<span class="token punctuation">.</span>js
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-p"><p dir="auto"><span alt="assets/images/Pasted image 20250710164645.png" src="assets/images/pasted-image-20250710164645.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Pasted image 20250710164645.png" src="assets/images/pasted-image-20250710164645.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">Now navigate normally to the found endpoint in the app, which will leave us with the following output:</p></div><div class="el-pre"><pre><code data-line="0">=== [*] signRequest (i) called with: user/friend_finder_v2 ===
+[StringBuilder constructor] capacity: 500
+[StringBuilder constructor] capacity: 500
+[StringBuilder.toString()] =&gt; device=c881fee26fb5f768&amp;y_device=y_f8b6fc9c-f44f-4e50-b6b6-c5e0a5e67687
+[StringBuilder constructor] capacity: 500
+[StringBuilder.toString()] =&gt; device=c881fee26fb5f768&amp;y_device=y_f8b6fc9c-f44f-4e50-b6b6-c5e0a5e67687
+[StringBuilder.toString()] =&gt; ywsid=TLD_YWSID
+[StringBuilder.toString()] =&gt; cc=US
+[StringBuilder.toString()] =&gt; efs=i8m/6CTloWKb+wCGwHUL+jZ2hunIyXWs0pSBHhCCmKxwCX23HempE4MaITvDog4oDvSnUKw1qRntv+wgq99BiHlGG132XjtQZ06wAME80Z4=
+[StringBuilder.toString()] =&gt; app_version=25.26.0-28252600
+[StringBuilder.toString()] =&gt; device_type=google+emulator64_x86_64_arm64/SE1A.211212.001.B1
+[StringBuilder.toString()] =&gt; time=1752158836
+[StringBuilder.toString()] =&gt; lang=en
+[StringBuilder.toString()] =&gt; nonce=3Z/0mQ==
+[StringBuilder constructor] capacity: 270
+[StringBuilder constructor] capacity: 21
+[StringBuilder.toString()] =&gt; user/friend_finder_v2
+[StringBuilder.toString()] =&gt; /user/friend_finder_v2app_version=25.26.0-28252600cc=USdevice_type=google+emulator64_x86_64_arm64/SE1A.211212.001.B1efs=i8m/6CTloWKb+wCGwHUL+jZ2hunIyXWs0pSBHhCCmKxwCX23HempE4MaITvDog4oDvSnUKw1qRntv+wgq99BiHlGG132XjtQZ06wAME80Z4=lang=ennonce=3Z/0mQ==time=1752158836ywsid=TLD_YWSID
+[StringBuilder.toString()] =&gt; _Ld/qvLwSEblnHUxXyaTD2MDkVMQ=
+[StringBuilder.toString()] =&gt; time=1752158836&amp;nonce=3Z%2F0mQ%3D%3D&amp;ywsid=TLD_YWSID&amp;device_type=google%2Bemulator64_x86_64_arm64%2FSE1A.211212.001.B1&amp;app_version=25.26.0-28252600&amp;cc=US&amp;lang=en&amp;efs=i8m%2F6CTloWKb%2BwCGwHUL%2BjZ2hunIyXWs0pSBHhCCmKxwCX23HempE4MaITvDog4oDvSnUKw1qRntv%2Bwgq99BiHlGG132XjtQZ06wAME80Z4%3D&amp;signature=_Ld%2FqvLwSEblnHUxXyaTD2MDkVMQ%3D
+[StringBuilder.toString()] =&gt; https://REDACTED-api.CASE_STUDY.com/user/friend_finder_v2?time=1752158836&amp;nonce=3Z%2F0mQ%3D%3D&amp;ywsid=TLD_YWSID&amp;device_type=google%2Bemulator64_x86_64_arm64%2FSE1A.211212.001.B1&amp;app_version=25.26.0-28252600&amp;cc=US&amp;lang=en&amp;efs=i8m%2F6CTloWKb%2BwCGwHUL%2BjZ2hunIyXWs0pSBHhCCmKxwCX23HempE4MaITvDog4oDvSnUKw1qRntv%2Bwgq99BiHlGG132XjtQZ06wAME80Z4%3D&amp;signature=_Ld%2FqvLwSEblnHUxXyaTD2MDkVMQ%3D
+=== [*] signRequest (i) finished ===
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-p"><p dir="auto">There is a lot of information that also verifies the other parameters.</p></div><div class="el-p"><p dir="auto">Lets focus on these specific 3 lines:</p></div><div class="el-pre"><pre><code data-line="0">[StringBuilder.toString()] =&gt; /user/friend_finder_v2app_version=25.26.0-28252600cc=USdevice_type=google+emulator64_x86_64_arm64/SE1A.211212.001.B1efs=i8m/6CTloWKb+wCGwHUL+jZ2hunIyXWs0pSBHhCCmKxwCX23HempE4MaITvDog4oDvSnUKw1qRntv+wgq99BiHlGG132XjtQZ06wAME80Z4=lang=ennonce=3Z/0mQ==time=1752158836ywsid=TLD_YWSID
+
+[StringBuilder.toString()] =&gt; _Ld/qvLwSEblnHUxXyaTD2MDkVMQ=
+
+[StringBuilder.toString()] =&gt; time=1752158836&amp;nonce=3Z%2F0mQ%3D%3D&amp;ywsid=TLD_YWSID&amp;device_type=google%2Bemulator64_x86_64_arm64%2FSE1A.211212.001.B1&amp;app_version=25.26.0-28252600&amp;cc=US&amp;lang=en&amp;efs=i8m%2F6CTloWKb%2BwCGwHUL%2BjZ2hunIyXWs0pSBHhCCmKxwCX23HempE4MaITvDog4oDvSnUKw1qRntv%2Bwgq99BiHlGG132XjtQZ06wAME80Z4%3D&amp;signature=_Ld%2FqvLwSEblnHUxXyaTD2MDkVMQ%3D
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-p"><p dir="auto">The first log is the string to be passed for the HMAC function. Notice there is no domain at the beginning or ampersands to separate the GET parameters. We now know what the content looks like before being signed.</p></div><div class="el-p"><p dir="auto">The second parameter is the signature. It is prepended with an underscore and is Base64 encoded, which we already knew.</p></div><div class="el-p"><p dir="auto">The last string is actually the signed URI, which contains ampersands and URL encoded parameters. This is because the first string is a copy of the last, and was processed specifically for the calculation of the signature.</p></div><div class="el-p"><p dir="auto">Looking up, we see the parameters used:</p></div><div class="el-pre"><pre><code data-line="0">[StringBuilder.toString()] =&gt; ywsid=TLD_YWSID
+[StringBuilder.toString()] =&gt; cc=US
+[StringBuilder.toString()] =&gt; efs=i8m/6CTloWKb+wCGwHUL+jZ2hunIyXWs0pSBHhCCmKxwCX23HempE4MaITvDog4oDvSnUKw1qRntv+wgq99BiHlGG132XjtQZ06wAME80Z4=
+[StringBuilder.toString()] =&gt; app_version=25.26.0-28252600
+[StringBuilder.toString()] =&gt; device_type=google+emulator64_x86_64_arm64/SE1A.211212.001.B1
+[StringBuilder.toString()] =&gt; time=1752159053
+[StringBuilder.toString()] =&gt; lang=en
+[StringBuilder.toString()] =&gt; nonce=nK+rPA==
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-p"><p dir="auto">The previous lines were used for the EFS calculation as we saw earlier.</p></div><div class="el-p"><p dir="auto">Matching this information with the code, we find out that the URL is not a string, but a dictionary that contains data from the URL for the signature. Before the URL is parsed to the signature function, it first sorts itself to then be casted to a string with NO ampersands to separate the GET parameters.</p></div><div class="el-p"><p dir="auto">This is the final GET parameter to reverse engineer.</p></div><div class="el-h1"><h1 data-heading="Finding the X-Bunsen-MAM headers" dir="auto" class="heading" id="Finding_the_X-Bunsen-MAM_headers_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Finding the X-Bunsen-MAM headers</h1></div><div class="el-p"><p dir="auto">As usual, we will begin by searching the plain text of the header.<br>
+<span alt="assets/images/Bunsen header search.png" src="assets/images/bunsen-header-search.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Bunsen header search.png" src="assets/images/bunsen-header-search.png" target="_self"></span><br>
+The second one matches the capitalization of the string, so lets choose it.<br>
+<span alt="assets/images/Bunsen search result.png" src="assets/images/bunsen-search-result.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Bunsen search result.png" src="assets/images/bunsen-search-result.png" target="_self"></span><br>
+We see that the bunsen header is located in the <code>state</code> object, which is an instance of the <code>BizWebViewContract3.c</code> class. We infer the names of the properties and rename them:<br>
+<span alt="assets/images/Reversed bunsen header code.png" src="assets/images/reversed-bunsen-header-code.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Reversed bunsen header code.png" src="assets/images/reversed-bunsen-header-code.png" target="_self"></span></p></div><div class="el-p"><p dir="auto">Now, lets dig into the <code>BizWebViewContract3.c</code> class:<br>
+<span alt="assets/images/More bunsen related code.png" src="assets/images/more-bunsen-related-code.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/More bunsen related code.png" src="assets/images/more-bunsen-related-code.png" target="_self"></span><br>
+This is the constructor, which shows that the bunsen headers are set through it. Lets now look for XREFs:<br>
+<span alt="assets/images/Bunsen constructor XREFs.png" src="assets/images/bunsen-constructor-xrefs.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Bunsen constructor XREFs.png" src="assets/images/bunsen-constructor-xrefs.png" target="_self"></span><br>
+We see two results, but none of them seems to be the better option. After digging into them, I chose the first one which seemed a bit easier:<br>
+<span alt="assets/images/XREF search first result.png" src="assets/images/xref-search-first-result.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/XREF search first result.png" src="assets/images/xref-search-first-result.png" target="_self"></span><br>
+This code is actually very confusing as of now, so we should think of an alternative. A nice approach would be to search for the parameters of the bunsen JSON string individually, and go upwards from there. Lets search for the <code>unique_view_id</code> parameter:<br>
+<span alt="assets/images/Search unique_view_id.png" src="assets/images/search-unique_view_id.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Search unique_view_id.png" src="assets/images/search-unique_view_id.png" target="_self"></span><br>
+The second one looks way nicer, lets check:<br>
+<span alt="assets/images/Second result for unique_view_id.png" src="assets/images/second-result-for-unique_view_id.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Second result for unique_view_id.png" src="assets/images/second-result-for-unique_view_id.png" target="_self"></span><br>
+If we cross reference this with the JSON contents of the saved request, we can see it has the same parameters. Lets break down the Bunsen header parameters.</p></div><div class="el-table" dir="ltr" style="overflow-x: auto;"><table>
+<thead>
+<tr>
+<th dir="ltr">Parameter</th>
+<th dir="ltr">Description</th>
+<th dir="ltr">Observations</th>
+<th dir="ltr">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td dir="ltr">hardware_model</td>
+<td dir="ltr">Type of phone</td>
+<td dir="ltr">Can be reused</td>
+<td dir="ltr">sdk_gphone64_x86_64,Google,ranchu</td>
+</tr>
+<tr>
+<td dir="ltr">local_timezone_offset</td>
+<td dir="ltr">Timezone</td>
+<td dir="ltr">Can be reused</td>
+<td dir="auto">+00:00</td>
+</tr>
+<tr>
+<td dir="ltr">unique_view_id</td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+<td dir="ltr">4aa74903-fe60-40aa-877f-047ecf47eb80</td>
+</tr>
+<tr>
+<td dir="ltr">previous_unique_view_id</td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+<td dir="ltr">932b92ad-00ed-4ecf-8422-388f4254632f</td>
+</tr>
+<tr>
+<td dir="ltr">user_advertising_id</td>
+<td dir="ltr">Telemetry</td>
+<td dir="ltr">Static</td>
+<td dir="auto">00000000-0000-0000-0000-000000000000</td>
+</tr>
+<tr>
+<td dir="ltr">session_id</td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+<td dir="ltr">30877930-748a-4765-b836-c688fa959650</td>
+</tr>
+</tbody>
+</table></div><div class="el-p"><p dir="auto">Lets find out how they are crafted.</p></div><div class="el-h2"><h2 data-heading="Session ID" dir="auto" class="heading" id="Session_ID_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Session ID</h2></div><div class="el-p"><p dir="auto">The session ID is passed in the line <code>new Tuples("session_id", this.sessionId)</code>. Lets find what writes into <code>this.sessionId</code>. The XREFs are the following:<br>
+<span alt="assets/images/Search for the session ID.png" src="assets/images/search-for-the-session-id.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Search for the session ID.png" src="assets/images/search-for-the-session-id.png" target="_self"></span><br>
+Well use the last one because its the most clear one.<br>
+<span alt="assets/images/Best result for the session ID search.png" src="assets/images/best-result-for-the-session-id-search.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Best result for the session ID search.png" src="assets/images/best-result-for-the-session-id-search.png" target="_self"></span><br>
+The code is pretty dense, well need to work on it first. After some work it gets like this:<br>
+<span alt="assets/images/After reversing.png" src="assets/images/after-reversing.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/After reversing.png" src="assets/images/after-reversing.png" target="_self"></span><br>
+If we track up, <code>this.sessionId</code> is assigned the value of <code>sessionId2</code>, which is assigned <code>session2.sessionId</code>. If we track where <code>session2</code> is made, we end up earlier in the code:<br>
+<span alt="assets/images/Session generation.png" src="assets/images/session-generation.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Session generation.png" src="assets/images/session-generation.png" target="_self"></span><br>
+I could assign that method the name <code>getCurrentSession</code> because of the type and use it was being given. If the method is used to get a value of type Session and then used later in the code, the origin method is probably a <a data-tooltip-position="top" aria-label="https://www.w3schools.com/java/java_encapsulation.asp" rel="noopener nofollow" class="external-link is-unresolved" href="https://www.w3schools.com/java/java_encapsulation.asp" target="_self">getter</a>. Lets dive in real quick:<br>
+<span alt="assets/images/SessionsTracker code.png" src="assets/images/sessionstracker-code.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/SessionsTracker code.png" src="assets/images/sessionstracker-code.png" target="_self"></span><br>
+Even though I already renamed and worked out the code, it was very easy and quick to do it because of the strings gave me the hints necessary. Notice how the code can return <code>null</code> if some time conditions  are met. The code does not generate the session ID. Instead, it verifies it and returns it.<br>
+So we rename it and get back the caller code:<br>
+<span alt="assets/images/Sesosion ID generation caller.png" src="assets/images/sesosion-id-generation-caller.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Sesosion ID generation caller.png" src="assets/images/sesosion-id-generation-caller.png" target="_self"></span><br>
+Heres another variable being assigned. Lets dig into the function:<br>
+<span alt="assets/images/Session ID generation.png" src="assets/images/session-id-generation.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Session ID generation.png" src="assets/images/session-id-generation.png" target="_self"></span><br>
+Remember earlier in this post where I mentioned synthetic classes? Well, this is an example.</p></div><div class="el-p"><p dir="auto">Even when the code is very simple, it has some differences with the usual class structure. For example, it does not bring a constructor like other classes do.</p></div><div class="el-p"><p dir="auto">This time we got lucky it was just this simple code, which tells us the <code>sessionId</code> is actually just a random UUID.</p></div><div class="el-h2"><h2 data-heading="Unique view ID" dir="auto" class="heading" id="Unique_view_ID_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Unique view ID</h2></div><div class="el-p"><p dir="auto">To find the <code>unique_view_id</code> and the <code>previous_unique_view_id</code> we need to find how they are generated. From their names we can guess theyre made in the same part of the code. Lets get back to the <code>Bunsen</code> class where the bunsen headers were made.<span alt="assets/images/unique_view_id source.png" src="assets/images/unique_view_id-source.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/unique_view_id source.png" src="assets/images/unique_view_id-source.png" target="_self"></span><br>
+Lets XREF the unique view ID to see where it comes from:<br>
+<span alt="assets/images/View ID XREFs.png" src="assets/images/view-id-xrefs.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/View ID XREFs.png" src="assets/images/view-id-xrefs.png" target="_self"></span><br>
+Lets use the last one because it looks nicer:<br>
+<span alt="assets/images/Best result for the XREF.png" src="assets/images/best-result-for-the-xref.png" class="internal-embed media-embed image-embed is-loaded" target="_self"><img alt="assets/images/Best result for the XREF.png" src="assets/images/best-result-for-the-xref.png" target="_self"></span><br>
+Well, this was pretty straightforward. The <code>bunsen.uniqueViewId</code> was assigned <code>string</code> which was a assigned a random UUID.</p></div><div class="el-p"><p dir="auto">From this we can guess that the <code>previous_unique_view_id</code> is also a random UUID. There is no need to work harder on this because we already know what we wanted.</p></div><div class="el-p"><p dir="auto">We wont be digging into the advertising ID because it is set to zeroes. I really doubt that was randomly generated, so if its static there is no need to change it.</p></div><div class="el-h1"><h1 data-heading="Writing down the results" dir="auto" class="heading" id="Writing_down_the_results_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Writing down the results</h1></div><div class="el-p"><p dir="auto">Now that we have reverse engineered everything we needed, we should write down the results of the analysis:</p></div><div class="el-h2"><h2 data-heading="GET parameters" dir="auto" class="heading" id="GET_parameters_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>GET parameters</h2></div><div class="el-table" dir="ltr" style="overflow-x: auto;"><table>
+<thead>
+<tr>
+<th dir="ltr">Parameter</th>
+<th dir="ltr">Description</th>
+<th dir="ltr">Done</th>
+<th dir="ltr">Note</th>
+<th dir="ltr">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td dir="ltr">time</td>
+<td dir="ltr">Unix time</td>
+<td dir="ltr">Yes</td>
+<td dir="auto"></td>
+<td dir="auto">1751368312</td>
+</tr>
+<tr>
+<td dir="ltr">nonce</td>
+<td dir="ltr">Random 4 bytes</td>
+<td dir="ltr">Yes</td>
+<td dir="ltr">Base64 then URL encoded</td>
+<td dir="ltr">53NLTA%3D%3D</td>
+</tr>
+<tr>
+<td dir="ltr">ywsid</td>
+<td dir="ltr">Some kind of ID</td>
+<td dir="ltr">Yes</td>
+<td dir="ltr">Static</td>
+<td dir="ltr">TLD_YWSID</td>
+</tr>
+<tr>
+<td dir="ltr">device_type</td>
+<td dir="ltr">Device name</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">App specific probably</td>
+<td dir="ltr">google%2Bemulator64_x86_64_arm64%2FSE1A.211212.001.B1</td>
+</tr>
+<tr>
+<td dir="ltr">app_version</td>
+<td dir="ltr">Version</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">Should be latest</td>
+<td dir="auto">25.26.0-28252600</td>
+</tr>
+<tr>
+<td dir="ltr">cc</td>
+<td dir="ltr">Country code</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">Just use whatever</td>
+<td dir="ltr">US</td>
+</tr>
+<tr>
+<td dir="ltr">lang</td>
+<td dir="ltr">Language</td>
+<td dir="ltr">N/A</td>
+<td dir="auto"></td>
+<td dir="ltr">en</td>
+</tr>
+<tr>
+<td dir="ltr">efs</td>
+<td dir="ltr">Used in signature</td>
+<td dir="ltr">Yes</td>
+<td dir="ltr">URL and Base64 encoded</td>
+<td dir="ltr"><code>i8m%2F6CTloWKb%2BwCGwHUL%2BjZ2hunIyXWs0pSBHhCCmKxwCX23HempE4MaITvDog4oDvSnUKw1qRntv%2Bwgq99BiHlGG132XjtQZ06wAME80Z4%3D</code></td>
+</tr>
+<tr>
+<td dir="ltr">signature</td>
+<td dir="ltr">URI checksum</td>
+<td dir="ltr">Yes</td>
+<td dir="ltr">URL and Base64 encoded (prepended with a "_")</td>
+<td dir="ltr"><code>_%2BGYw3yNYcgt%2FERficxDPX82c1HY%3D</code></td>
+</tr>
+</tbody>
+</table></div><div class="el-h3"><h3 data-heading="Notes" dir="auto" class="heading" id="Notes_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Notes</h3></div><div class="el-p"><p dir="auto">The EFS contents are composed of:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>The Android ID, which is a 16 character fingerprint of the Android device being used.
+<ul class="has-list-bullet">
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Pseudo code:&nbsp;<code>toHex(random(16))</code></li>
+</ul>
+</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>The&nbsp;<code>y_device</code>&nbsp;UUID value.
+<ul class="has-list-bullet">
+<li data-line="3" dir="auto"><span class="list-bullet"></span>Pseudo code:&nbsp;<code>"y_" + randomUUID()</code>.</li>
+</ul>
+</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>A raw, unencrypted EFS would look like this:
+<ul class="has-list-bullet">
+<li data-line="5" dir="auto"><span class="list-bullet"></span><code>device=c881fee26fb5f768&amp;y_device=y_f8b6fc9c-f44f-4e50-b6b6-c5e0a5e67687</code></li>
+</ul>
+</li>
+</ul></div><div class="el-h2"><h2 data-heading="Headers" dir="auto" class="heading" id="Headers_1"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Headers</h2></div><div class="el-table" dir="ltr" style="overflow-x: auto;"><table>
+<thead>
+<tr>
+<th dir="ltr">Header</th>
+<th dir="ltr">Description</th>
+<th dir="ltr">Done</th>
+<th dir="ltr">Mandatory</th>
+<th dir="ltr">Note</th>
+<th dir="ltr">Example</th>
+<th dir="auto"></th>
+<th dir="auto"></th>
+<th dir="auto"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td dir="ltr">Accept-Encoding</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">Yes</td>
+<td dir="ltr">Standard</td>
+<td dir="ltr">gzip</td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+</tr>
+<tr>
+<td dir="ltr">Connection</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">Yes</td>
+<td dir="ltr">Standard</td>
+<td dir="ltr">Keep-Alive</td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+</tr>
+<tr>
+<td dir="ltr">Content-Length</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">Yes</td>
+<td dir="ltr">Standard</td>
+<td dir="auto">37</td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+</tr>
+<tr>
+<td dir="ltr">Content-Type</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">Yes</td>
+<td dir="ltr">Standard</td>
+<td dir="ltr">application/x-www-form-urlencoded</td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+</tr>
+<tr>
+<td dir="ltr">Cookie</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">No</td>
+<td dir="ltr">Set in the response</td>
+<td dir="ltr">`datadome=6FjERKGvSDXIWZYpccgOiFCELelFkmHGFlNYqn9KLMmtLp2cKNxKFtrphtxeeOOWc9WFW8z_~Y0tK7ruN0pPq3YizT65A25ipkLXUF4jJCSVLfwqDHeCYafJ3wd1iLkn; bse=a039cb6a296e4b1f8485635ec6708206; wdi=2\</td>
+<td dir="ltr">8CBA30BA6973AB68\</td>
+<td dir="ltr">0x1.a1647e87e6877p+30\</td>
+<td dir="ltr">c306da7ca2fc4c4c`</td>
+</tr>
+<tr>
+<td dir="ltr">Host</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">Yes</td>
+<td dir="ltr">Static</td>
+<td dir="ltr">REDACTED-api.CASE_STUDY.com</td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+</tr>
+<tr>
+<td dir="ltr">User-Agent</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">Yes</td>
+<td dir="ltr">Custom</td>
+<td dir="ltr">Version/1 CASE_STUDY/v25.26.0-28252600 Carrier/T-Mobile Model/emulator64_x86_64_arm64 OSBuild/SE1A.211212.001.B1 Android/12</td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+</tr>
+<tr>
+<td dir="ltr">X-Auth-Token-2</td>
+<td dir="ltr">Auth token assigned at login</td>
+<td dir="ltr">No</td>
+<td dir="ltr">Yes</td>
+<td dir="ltr">Dynamic</td>
+<td dir="ltr">REDACTED</td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+</tr>
+<tr>
+<td dir="ltr">X-Bunsen-MAM</td>
+<td dir="ltr">Advertising data</td>
+<td dir="ltr">Yes</td>
+<td dir="ltr">Yes</td>
+<td dir="auto"></td>
+<td dir="ltr"><code>{"hardware_model":"sdk_gphone64_x86_64,Google,ranchu","local_timezone_offset":"+00:00","unique_view_id":"814404d6-7055-4668-bf10-7cf68834ab4e","previous_unique_view_id":"ccedb3ff-57ad-4a7f-8964-fd38020d4899","user_advertising_id":"00000000-0000-0000-0000-000000000000","session_id":"659eb376-9a71-4650-8290-09ff4b240bc1"}</code></td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+</tr>
+<tr>
+<td dir="ltr">X-Foregrounded</td>
+<td dir="ltr">Is in foreground</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">Yes</td>
+<td dir="ltr">Static</td>
+<td dir="ltr">true</td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+</tr>
+<tr>
+<td dir="ltr">X-Screen-Scale</td>
+<td dir="ltr">Screen size</td>
+<td dir="ltr">N/A</td>
+<td dir="ltr">Yes</td>
+<td dir="ltr">Static</td>
+<td dir="auto">2.625</td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+<td dir="auto"></td>
+</tr>
+</tbody>
+</table></div><div class="el-h2"><h2 data-heading="POST data" dir="auto" class="heading" id="POST_data_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>POST data</h2></div><div class="el-table" dir="ltr" style="overflow-x: auto;"><table>
+<thead>
+<tr>
+<th dir="ltr">Key</th>
+<th dir="ltr">Description</th>
+<th dir="ltr">Done</th>
+<th dir="ltr">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td dir="ltr">emails</td>
+<td dir="ltr">Raw, comma separated</td>
+<td dir="ltr">Yes</td>
+<td dir="ltr"><code>test@gmail.com</code></td>
+</tr>
+<tr>
+<td dir="ltr">ignored</td>
+<td dir="ltr">Raw, static</td>
+<td dir="ltr">Yes</td>
+<td dir="ltr">false</td>
+</tr>
+</tbody>
+</table></div><div class="el-blockquote"><blockquote dir="auto">
+<p>Example POST payload:&nbsp;<code>emails=test@gmail.com,test@yahoo.com&amp;ignored=false</code></p>
+</blockquote></div><div class="el-h1"><h1 data-heading="Wrapping up" dir="auto" class="heading" id="Wrapping_up_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Wrapping up</h1></div><div class="el-p"><p dir="auto">We have reverse engineered all the code necessary to defeat integrity controls, including cryptography and telemetry checks.</p></div><div class="el-p"><p dir="auto">By no means I encourage the misuse of this research. As previously stated in the disclaimer, this post serves only as an educational and research resource.</p></div><div class="footer"><div class="data-bar"></div></div></div></div></div><div id="right-content" class="leaf" style="--sidebar-width: var(--sidebar-width-right);"><div id="right-sidebar" class="sidebar"><div class="sidebar-handle"></div><div class="sidebar-topbar"><div class="topbar-content"><label class="theme-toggle-container" for="theme-toggle-input" id=""><input class="theme-toggle-input" type="checkbox" id="theme-toggle-input"><div class="toggle-background"></div></label></div><div class="clickable-icon sidebar-collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><path d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3Z"></path><path d="M10 4V20"></path><path d="M4 7H7"></path><path d="M4 10H7"></path><path d="M4 13H7"></path></svg></div></div><div class="sidebar-content-wrapper"><div id="right-sidebar-content" class="leaf-content"><div class="graph-view-wrapper"><div class="feature-header"><div class="feature-title">Interactive Graph</div></div><div class="graph-view-placeholder">
+		<div class="graph-view-container">
+			<div class="graph-icon graph-expand" role="button" aria-label="Expand" data-tooltip-position="top"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></div>
+			<div class="graph-icon graph-global" role="button" aria-label="Global Graph" data-tooltip-position="top"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-git-fork"><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"></path><path d="M12 12v3"></path></svg></div>
+			<canvas id="graph-canvas" class="hide" width="512px" height="512px"></canvas>
+		</div>
+		</div></div><div id="outline" class=" tree-container"><div class="feature-header"><div class="feature-title">Table Of Contents</div><button class="clickable-icon nav-action-button tree-collapse-all" aria-label="Collapse All"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></button></div><div class="tree-item" data-depth="1"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Defeating_web_API_integrity_controls_in_Android_0" data-path="#Defeating_web_API_integrity_controls_in_Android_0"><div class="tree-item-inner heading-link" heading-name="Defeating web API integrity controls in Android">Defeating web API integrity controls in Android</div></a><div class="tree-item-children"></div></div><div class="tree-item mod-collapsible" data-depth="1"><a class="tree-item-self is-clickable mod-collapsible" href="content/2025-09-07-defeating-api-integrity-controls.html#Introduction_0" data-path="#Introduction_0"><div class="tree-item-icon collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div><div class="tree-item-inner heading-link" heading-name="Introduction">Introduction</div></a><div class="tree-item-children"><div class="tree-item" data-depth="2"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Skills_0" data-path="#Skills_0"><div class="tree-item-inner heading-link" heading-name="Skills">Skills</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="2"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Skills_not_covered_0" data-path="#Skills_not_covered_0"><div class="tree-item-inner heading-link" heading-name="Skills not covered">Skills not covered</div></a><div class="tree-item-children"></div></div></div></div><div class="tree-item" data-depth="1"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Disclaimer_0" data-path="#Disclaimer_0"><div class="tree-item-inner heading-link" heading-name="Disclaimer">Disclaimer</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="1"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#First_steps,_looking_at_the_app_0" data-path="#First_steps,_looking_at_the_app_0"><div class="tree-item-inner heading-link" heading-name="First steps, looking at the app">First steps, looking at the app</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="1"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Rooting_the_AVD_and_its_reasons_0" data-path="#Rooting_the_AVD_and_its_reasons_0"><div class="tree-item-inner heading-link" heading-name="Rooting the AVD and its reasons">Rooting the AVD and its reasons</div></a><div class="tree-item-children"></div></div><div class="tree-item mod-collapsible" data-depth="1"><a class="tree-item-self is-clickable mod-collapsible" href="content/2025-09-07-defeating-api-integrity-controls.html#Bypassing_SSL_Pinning_0" data-path="#Bypassing_SSL_Pinning_0"><div class="tree-item-icon collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div><div class="tree-item-inner heading-link" heading-name="Bypassing SSL Pinning">Bypassing SSL Pinning</div></a><div class="tree-item-children"><div class="tree-item" data-depth="2"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Alternative_to_&quot;Android_App_via_Frida&quot;_0" data-path="#Alternative_to_&quot;Android_App_via_Frida&quot;_0"><div class="tree-item-inner heading-link" heading-name="Alternative to &quot;Android App via Frida&quot;">Alternative to "Android App via Frida"</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="2"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Bypassing_SSL_pinning_the_easy_way_0" data-path="#Bypassing_SSL_pinning_the_easy_way_0"><div class="tree-item-inner heading-link" heading-name="Bypassing SSL pinning the easy way">Bypassing SSL pinning the easy way</div></a><div class="tree-item-children"></div></div><div class="tree-item mod-collapsible" data-depth="2"><a class="tree-item-self is-clickable mod-collapsible" href="content/2025-09-07-defeating-api-integrity-controls.html#Analising_test_results_0" data-path="#Analising_test_results_0"><div class="tree-item-icon collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div><div class="tree-item-inner heading-link" heading-name="Analising test results">Analising test results</div></a><div class="tree-item-children"><div class="tree-item" data-depth="3"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#URL_and_GET_parameters_0" data-path="#URL_and_GET_parameters_0"><div class="tree-item-inner heading-link" heading-name="URL and GET parameters">URL and GET parameters</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="3"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Headers_0" data-path="#Headers_0"><div class="tree-item-inner heading-link" heading-name="Headers">Headers</div></a><div class="tree-item-children"></div></div></div></div><div class="tree-item" data-depth="2"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Test_conclusions_0" data-path="#Test_conclusions_0"><div class="tree-item-inner heading-link" heading-name="Test conclusions">Test conclusions</div></a><div class="tree-item-children"></div></div></div></div><div class="tree-item" data-depth="1"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Finding_the_code_0" data-path="#Finding_the_code_0"><div class="tree-item-inner heading-link" heading-name="Finding the code">Finding the code</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="1"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Defeating_cryptography_0" data-path="#Defeating_cryptography_0"><div class="tree-item-inner heading-link" heading-name="Defeating cryptography">Defeating cryptography</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="1"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Finishing_the_EFS_0" data-path="#Finishing_the_EFS_0"><div class="tree-item-inner heading-link" heading-name="Finishing the EFS">Finishing the EFS</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="1"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Finding_the_ywsid_0" data-path="#Finding_the_ywsid_0"><div class="tree-item-inner heading-link" heading-name="Finding the ywsid">Finding the ywsid</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="1"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Finding_the_time_and_nonce_0" data-path="#Finding_the_time_and_nonce_0"><div class="tree-item-inner heading-link" heading-name="Finding the time and nonce">Finding the time and nonce</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="1"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Defeating_HMACs_0" data-path="#Defeating_HMACs_0"><div class="tree-item-inner heading-link" heading-name="Defeating HMACs">Defeating HMACs</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="1"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Logging_information_with_Frida_0" data-path="#Logging_information_with_Frida_0"><div class="tree-item-inner heading-link" heading-name="Logging information with Frida">Logging information with Frida</div></a><div class="tree-item-children"></div></div><div class="tree-item mod-collapsible" data-depth="1"><a class="tree-item-self is-clickable mod-collapsible" href="content/2025-09-07-defeating-api-integrity-controls.html#Finding_the_X-Bunsen-MAM_headers_0" data-path="#Finding_the_X-Bunsen-MAM_headers_0"><div class="tree-item-icon collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div><div class="tree-item-inner heading-link" heading-name="Finding the X-Bunsen-MAM headers">Finding the X-Bunsen-MAM headers</div></a><div class="tree-item-children"><div class="tree-item" data-depth="2"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Session_ID_0" data-path="#Session_ID_0"><div class="tree-item-inner heading-link" heading-name="Session ID">Session ID</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="2"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Unique_view_ID_0" data-path="#Unique_view_ID_0"><div class="tree-item-inner heading-link" heading-name="Unique view ID">Unique view ID</div></a><div class="tree-item-children"></div></div></div></div><div class="tree-item mod-collapsible" data-depth="1"><a class="tree-item-self is-clickable mod-collapsible" href="content/2025-09-07-defeating-api-integrity-controls.html#Writing_down_the_results_0" data-path="#Writing_down_the_results_0"><div class="tree-item-icon collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div><div class="tree-item-inner heading-link" heading-name="Writing down the results">Writing down the results</div></a><div class="tree-item-children"><div class="tree-item mod-collapsible" data-depth="2"><a class="tree-item-self is-clickable mod-collapsible" href="content/2025-09-07-defeating-api-integrity-controls.html#GET_parameters_0" data-path="#GET_parameters_0"><div class="tree-item-icon collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div><div class="tree-item-inner heading-link" heading-name="GET parameters">GET parameters</div></a><div class="tree-item-children"><div class="tree-item" data-depth="3"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Notes_0" data-path="#Notes_0"><div class="tree-item-inner heading-link" heading-name="Notes">Notes</div></a><div class="tree-item-children"></div></div></div></div><div class="tree-item" data-depth="2"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Headers_1" data-path="#Headers_1"><div class="tree-item-inner heading-link" heading-name="Headers">Headers</div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="2"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#POST_data_0" data-path="#POST_data_0"><div class="tree-item-inner heading-link" heading-name="POST data">POST data</div></a><div class="tree-item-children"></div></div></div></div><div class="tree-item" data-depth="1"><a class="tree-item-self is-clickable" href="content/2025-09-07-defeating-api-integrity-controls.html#Wrapping_up_0" data-path="#Wrapping_up_0"><div class="tree-item-inner heading-link" heading-name="Wrapping up">Wrapping up</div></a><div class="tree-item-children"></div></div></div></div></div><script defer="">let rs = document.querySelector("#right-sidebar"); rs.classList.toggle("is-collapsed", window.innerWidth < 768); rs.style.setProperty("--sidebar-width", localStorage.getItem("sidebar-right-width"));</script></div></div></div></div></body></html>
